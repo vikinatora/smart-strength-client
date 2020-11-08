@@ -2,7 +2,7 @@ import React, { Component, useEffect } from "react";
 import { Text, StyleSheet, AsyncStorage, TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
 import * as actions from '../../actions';
-import QuestionnaireScreen from "./Questionnaire";
+import QuestionnaireScreen from "./QuestionnaireScreen";
 
 const HomeScreen = (props) => {
   useEffect(() => {
