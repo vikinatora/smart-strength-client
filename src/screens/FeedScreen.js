@@ -7,6 +7,7 @@ import { AppLoading } from 'expo';
 
 
 import {SCREEN_HEIGHT, STATUSBAR_HEIGHT} from "../../global/globalVariables";
+import { FontAwesome } from "@expo/vector-icons";
 
 const QuestionnaireScreen = (props) => {
   const [showFeed, setShowFeed] = useState(true);
@@ -23,10 +24,14 @@ const QuestionnaireScreen = (props) => {
     : <View>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity activeOpacity={0.5} onPress={() => {setShowFeed(true); setShowLog(false)}} style={[styles.navigationButton, styles.feedButton]}>
-            <Text style={styles.buttonText}>Feed</Text>
+            <Text style={styles.buttonText}>
+              <FontAwesome size={24} name="home" color="white" /> Feed
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.5} onPress={() => {setShowLog(true); setShowFeed(false)}} style={[styles.navigationButton, styles.logButton]}>
-            <Text style={styles.buttonText}>Log</Text>
+            <Text style={styles.buttonText}>
+              <FontAwesome size={20} name="calendar-plus-o" color="white" /> Log
+            </Text>
           </TouchableOpacity>
         </View>
         {
@@ -48,7 +53,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     height: SCREEN_HEIGHT / 12,
     textAlign: "center",
-    backgroundColor: "#3B5998",
+    backgroundColor: "#3b5998",
   },
   feedButton: {
     width: "50%",

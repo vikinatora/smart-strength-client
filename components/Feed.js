@@ -44,7 +44,7 @@ const Feed = (props) => {
   );
 }
 const styles = StyleSheet.create({
-  componentContainer:{
+  componentContainer: {
     marginTop: SCREEN_HEIGHT / 12,
   },
   container: {
