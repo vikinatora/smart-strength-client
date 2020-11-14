@@ -27,7 +27,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen 
+          <Stack.Screen 
             name="Home" 
             component={HomeScreen}
             options={{
@@ -40,7 +40,7 @@ const App = () => {
             options={{
               headerShown: false
             }} 
-          /> */}
+          />
           <Stack.Screen 
             name="Feed"
             component={FeedScreen}

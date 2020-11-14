@@ -4,10 +4,10 @@ import { useFonts, OpenSans_400Regular} from '@expo-google-fonts/open-sans';
 import Feed from "../../components/Feed";
 import Log from "../../components/Log";
 import { AppLoading } from 'expo';
+import { FontAwesome } from "@expo/vector-icons";
 
 
 import {SCREEN_HEIGHT, STATUSBAR_HEIGHT} from "../../global/globalVariables";
-import { FontAwesome } from "@expo/vector-icons";
 
 const QuestionnaireScreen = (props) => {
   const [showFeed, setShowFeed] = useState(true);
