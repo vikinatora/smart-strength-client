@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {StyleSheet, View, Text } from "react-native";
-import { useFonts, OpenSans_400Regular} from '@expo-google-fonts/open-sans';
 import Questionnaire from "../../components/Questionnaire";
 import {SCREEN_HEIGHT, STATUSBAR_HEIGHT} from "../../global/globalVariables";
+import { useFonts, OpenSans_400Regular} from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
 
 const QuestionnaireScreen = (props) => {
   const questions = [
     {
-      questionValue: "trainingExperience",
+      value: "trainingExperience",
       question: "How long have you been working out?",
       answers: [
         { id: "1", text: "1 year" },
@@ -18,6 +18,7 @@ const QuestionnaireScreen = (props) => {
       ]
     },
     {
+      value: "workoutsPerWeek",
       question: "How many times per week do you workout?",
       answers: [
         { id: "1", text: "I don't workout at all" },
@@ -27,6 +28,7 @@ const QuestionnaireScreen = (props) => {
       ]
     },
     {
+      value: "workoutDuration",
       question: "How many hours do you workout every session?",
       answers: [
         { id: "1", text: "30 minutes-1 hour" },
@@ -36,6 +38,7 @@ const QuestionnaireScreen = (props) => {
       ]
     },
     {
+      value: "workoutPreference",
       question: "Which form of exercise do you prefer?",
       answers: [
         { id: "1", text: "I don't enjoy exercising" },
@@ -45,6 +48,7 @@ const QuestionnaireScreen = (props) => {
       ]
     },
     {
+      value: "dietExperience",
       question: "Have you been on a diet or food regime in the past?",
       answers: [
         { id: "1", text: "Yes" },
@@ -52,13 +56,7 @@ const QuestionnaireScreen = (props) => {
       ]
     },
     {
-      question: "Do you have any foods you particularly dislike?",
-      answers: [
-        { id: "1", text: "Yes" /*describe which*/ },
-        { id: "2", text: "No" },
-      ]
-    }, 
-    {
+      value: "fitnessGoal",
       question: "What is your current fitness goal?",
       answers: [
         { id: "1", text: "To lose weight/fat" },
@@ -68,15 +66,26 @@ const QuestionnaireScreen = (props) => {
       ]
     },
     {
-      question: "Are you satisfied with the plan we have prepared for you?",
+      value: "progressionRate",
+      question: "How motivated are you to achieve your goals fast?",
       answers: [
-        { id: "1", text: "Yes" },
-        { id: "2", text: "I'd like to change something" },
+        { id: "1", text: "Little to none motivation"},
+        { id: "2", text: "Moderately motivated"},
+        { id: "3", text: "Very motivated"},
+        { id: "4", text: "I need to be ripped for the beach by next Monday" },
       ]
-    }
+    }, 
+    // {
+    //   value: "satisfaction",
+    //   question: "Are you satisfied with the plan we have prepared for you?",
+    //   answers: [
+    //     { id: "1", text: "Yes" },
+    //     { id: "2", text: "I'd like to change something" },
+    //   ]
+    // }
   ];  
   const params = props.route.params;
-  const [answers, setAnswer] = useState({});
+  const [answers, setAnswers] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
   let [fontsLoaded] = useFonts({
     OpenSans_400Regular
@@ -86,8 +95,7 @@ const QuestionnaireScreen = (props) => {
     !fontsLoaded
     ? <AppLoading/>
     : <View style={styles.screenContainer}>
-        <Text style={{textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12}}>First we have to get to know you {params.name}</Text>
-        <Questionnaire setQuestionIndex={setQuestionIndex} questionIndex={questionIndex} question={questions[questionIndex]} setAnswer={setAnswer} answers={answers}/>
+        <Questionnaire questions={questions} setQuestionIndex={setQuestionIndex} questionIndex={questionIndex} question={questions[questionIndex]} setAnswers={setAnswers} answers={answers}/>
       </View>
   );
 }

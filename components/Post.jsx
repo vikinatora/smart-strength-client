@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import moment from "moment";
+import { FontAwesome5 } from "@expo/vector-icons";
 import Comment from "./Comment";
-import CommentInput from './CommentInput';
-import moment from 'moment';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import CommentInput from "./CommentInput";
 
 export default Post = (props) => {
   const [post, setPost] = useState({
@@ -78,7 +78,7 @@ export default Post = (props) => {
                 <CommentInput submitComment={props.submitComment}/>
                 <View style={styles.commentsContainer}>
                     {comments.map((comment, index) => <Comment key={index} comment={comment}/> )}
-                  </View>
+                </View>
               </View>
             : null
           }

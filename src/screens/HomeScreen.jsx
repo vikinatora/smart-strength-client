@@ -2,7 +2,8 @@ import React, { Component, useEffect } from "react";
 import { Text, StyleSheet, AsyncStorage, TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
 import * as actions from '../../actions';
-import QuestionnaireScreen from "./QuestionnaireScreen";
+import { useFonts, OpenSans_400Regular} from '@expo-google-fonts/open-sans';
+import { AppLoading } from 'expo';
 
 const HomeScreen = (props) => {
   useEffect(() => {
@@ -10,9 +11,16 @@ const HomeScreen = (props) => {
     if (token) {
       props.navigation.navigate("Questionnaire", { name: "Viktor" })
     }
-  }, [])
+  }, []);
+
+  let [fontsLoaded] = useFonts({
+    OpenSans_400Regular
+  });
+
   return (
-    <View>
+    !fontsLoaded
+    ? <AppLoading/>
+    : <View>
       <Text style={styles.text}>Welcome to Smart-Strength!</Text>
       {
       AsyncStorage.getItem('fb_token') != null
@@ -37,7 +45,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "400",
     marginTop: 50,
-    marginBottom: 400
+    marginBottom: 400,
+    fontFamily: "OpenSans_400Regular"
   },
   button: {
     height: 70,
