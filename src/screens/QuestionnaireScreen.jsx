@@ -19,12 +19,12 @@ const QuestionnaireScreen = (props) => {
     },
     {
       value: "workoutsPerWeek",
-      question: "How many times per week do you workout?",
+      question: "How many times per week can you workout?",
       answers: [
-        { id: "1", text: "I don't workout at all" },
-        { id: "2", text: "1-3 times"},
-        { id: "3", text: "3-5 times" },
-        { id: "4", text: "More than 5 times" }
+        { id: "3", text: "3" },
+        { id: "4", text: "4 times"},
+        { id: "5", text: "5 times" },
+        { id: "6", text: "6" }
       ]
     },
     {
@@ -95,7 +95,15 @@ const QuestionnaireScreen = (props) => {
     !fontsLoaded
     ? <AppLoading/>
     : <View style={styles.screenContainer}>
-        <Questionnaire questions={questions} setQuestionIndex={setQuestionIndex} questionIndex={questionIndex} question={questions[questionIndex]} setAnswers={setAnswers} answers={answers}/>
+        <Questionnaire 
+        questions={questions} 
+        setQuestionIndex={setQuestionIndex} 
+        questionIndex={questionIndex} 
+        question={questions[questionIndex]} 
+        setAnswers={setAnswers} 
+        answers={answers}
+        navigation={props.navigation}
+      />
       </View>
   );
 }

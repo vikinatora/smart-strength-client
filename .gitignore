@@ -3,3 +3,4 @@ node_modules
 .expo/settings.json
 .expo/web
 .eslintrc.json
+debug.log

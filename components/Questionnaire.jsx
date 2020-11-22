@@ -2,15 +2,31 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { SCREEN_HEIGHT } from "../global/globalVariables";
 import Loader from "./Loader";
+import workoutService from "../services/workoutService";
+import axios from "axios";
+import dietService from "../services/dietService";
 
-
-export default Questionnaire = ({questions, question, setAnswers, answers, questionIndex, setQuestionIndex}) => {
+export default Questionnaire = ({questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation}) => {
   const [markedAnswer, setMarkedAnswer] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const viewNextQuestion = () => {
+  const viewNextQuestion = async () => {
     if (questionIndex === questions.length - 1) {
       setIsProcessing(true);
       console.log("Processing...");
+      console.log(answers);
+      try {
+        const workout = await workoutService.createWorkoutAndDiet(answers);
+        const diet = await dietService.createDiet(answers);
+        console.log(workout);
+        console.log(diet);
+        setIsProcessing(false);
+        navigation.navigate("RegimePreview", { workotPlan: workout, diet: diet })
+      }
+      catch(err) {
+
+      }
+
+
     }
     else {
       setAnswers({
@@ -28,11 +44,6 @@ export default Questionnaire = ({questions, question, setAnswers, answers, quest
     setQuestionIndex(q)
     setMarkedAnswer(answers[questions[q].value]);
   }
-
-  useEffect(() => {
-    console.log(questionIndex);
-    // console.log(answers);
-  }, [questionIndex])
   return (
     isProcessing
     ? <Loader/>

@@ -5,7 +5,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./src/screens/HomeScreen";
 import store from "./store";
 import QuestionnaireScreen from "./src/screens/QuestionnaireScreen";
-import FeedScreen from "./src/screens/FeedScreen.jsx";
+import FeedScreen from "./src/screens/FeedScreen";
+import RegimePreviewScreen from "./src/screens/RegimePreviewScreen";
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,13 @@ const App = () => {
           <Stack.Screen
             name="Questionnaire"
             component={QuestionnaireScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="RegimePreview"
+            component={RegimePreviewScreen}
             options={{
               headerShown: false,
             }}
