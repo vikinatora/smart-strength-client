@@ -1,17 +1,29 @@
 import { BASEURI } from "../global/globalVariables"
+import axios from "axios";
+import api from "./api";
 
 export default dietService = {
   createDiet: async (model) => {
     const endPoint = `${BASEURI}/api/diets/create`;
-    const diet = await api.get(model, endPoint, "Couldnt't create workout");
-
-    // const diet = await axios.get(
-    //   endPoint, 
-    //   {
-    //     data: model,
-    //   }
-    // );
-    
-    return diet;
+    try {
+      const { data } = await axios.post(
+        endPoint, 
+        {
+          model,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      console.log(data);
+  
+      return data;
+    }
+    catch(err) {
+      console.log(err);
+      return null;
+    }
   }
 }

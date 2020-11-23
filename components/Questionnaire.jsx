@@ -3,7 +3,6 @@ import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { SCREEN_HEIGHT } from "../global/globalVariables";
 import Loader from "./Loader";
 import workoutService from "../services/workoutService";
-import axios from "axios";
 import dietService from "../services/dietService";
 
 export default Questionnaire = ({questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation}) => {
@@ -12,21 +11,18 @@ export default Questionnaire = ({questions, question, setAnswers, answers, quest
   const viewNextQuestion = async () => {
     if (questionIndex === questions.length - 1) {
       setIsProcessing(true);
+      
       console.log("Processing...");
       console.log(answers);
-      try {
-        const workout = await workoutService.createWorkoutAndDiet(answers);
-        const diet = await dietService.createDiet(answers);
-        console.log(workout);
-        console.log(diet);
-        setIsProcessing(false);
-        navigation.navigate("RegimePreview", { workotPlan: workout, diet: diet })
-      }
-      catch(err) {
 
-      }
+      const workout = await workoutService.createWorkout(answers);
+      const diet = await dietService.createDiet(answers);
 
+      console.log(workout);
+      console.log(diet);
 
+      setIsProcessing(false);
+      navigation.navigate("RegimePreview", { workotPlan: workout, diet: diet })
     }
     else {
       setAnswers({
@@ -49,8 +45,7 @@ export default Questionnaire = ({questions, question, setAnswers, answers, quest
     ? <Loader/>
     : 
     <View>
-
-      <Text style={{textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12}}>First we have to get to know you {name || "Viktor"}</Text>
+      <Text style={{textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12}}>First we have to get to know you {"Viktor"}</Text>
       <View style={styles.questionnaireContainer}>
         <View>
           <Text style={{fontSize: 17, textAlign: "center"}}>{question.question}</Text>

@@ -35,8 +35,8 @@ export default api = {
         xhr.onerror = (e) => {
           reject(errorMessage);
         };
-  
         xhr.open("GET", endPoint );
+        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(model);
     });
   }
