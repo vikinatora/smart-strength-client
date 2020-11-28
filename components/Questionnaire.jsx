@@ -18,13 +18,8 @@ export default Questionnaire = ({name, questions, question, setAnswers, answers,
 
       const workout = await workoutService.createWorkout(answers);
       const diet = await dietService.createDiet(answers);
-
-      console.log(`workout:`);
-      console.log(workout);
-      console.log(`diet:`);
-      console.log(diet);
-
-      // setIsProcessing(false);
+      
+      setIsProcessing(false);
       navigation.navigate("RegimePreview", { workout: workout, diet: diet })
     }
     else {

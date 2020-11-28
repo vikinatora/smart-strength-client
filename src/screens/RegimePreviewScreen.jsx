@@ -1,17 +1,23 @@
 import React, { useEffect } from "react";
 import {View, Text, StyleSheet} from "react-native";
+import DietPreview from "../../components/DietPreview";
 import TrainingProgramPreview from "../../components/TrainingProgramPreview";
 import { STATUSBAR_HEIGHT } from "../../global/globalVariables";
 
 const RegimePreviewScreen = (props) => {
-  const { workoutPlan, diet } = props;
+  const { workout, diet } = props.route.params;
   useEffect(() => {
-    console.log(workoutPlan);
+    console.log(workout);
     console.log(diet);
   }, [])
   return (
     <View style={styles.container}>
-      <TrainingProgramPreview/>
+      <TrainingProgramPreview
+        workout={workout}
+      />
+      <DietPreview
+        diet={diet}
+      />
     </View>
   )
 };

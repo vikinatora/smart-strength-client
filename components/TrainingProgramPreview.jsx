@@ -3,17 +3,10 @@ import { View, StyleSheet, Text } from "react-native";
 import { SCREEN_HEIGHT } from "../global/globalVariables";
 
 export default TrainingRegimePreview = (props) => {
-  // const trainingProgram = props.route.params.workout;
-  // const diet = props.route.params.diet;
-
-  useEffect(() => {
-    console.log(props)
-    console.log(props.route);
-  });
 
   return (
     <View style={styles.container}>
-      <Text>Test</Text>
+      <Text>Training program preview</Text>
     </View>
   )
 }
