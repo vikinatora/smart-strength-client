@@ -16,9 +16,7 @@ export default dietService = {
             "Content-Type": "application/json"
           }
         }
-      );
-      console.log(data);
-  
+      );  
       return data;
     }
     catch(err) {

@@ -84,9 +84,9 @@ const QuestionnaireScreen = (props) => {
     //   ]
     // }
   ];  
-  const params = props.route.params;
   const [answers, setAnswers] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
+
   let [fontsLoaded] = useFonts({
     OpenSans_400Regular
   });
@@ -96,14 +96,15 @@ const QuestionnaireScreen = (props) => {
     ? <AppLoading/>
     : <View style={styles.screenContainer}>
         <Questionnaire 
-        questions={questions} 
-        setQuestionIndex={setQuestionIndex} 
-        questionIndex={questionIndex} 
-        question={questions[questionIndex]} 
-        setAnswers={setAnswers} 
-        answers={answers}
-        navigation={props.navigation}
-      />
+          name={props.route.params.name.split(" ")[0]}
+          questions={questions} 
+          setQuestionIndex={setQuestionIndex} 
+          questionIndex={questionIndex} 
+          question={questions[questionIndex]} 
+          setAnswers={setAnswers} 
+          answers={answers}
+          navigation={props.navigation}
+        />
       </View>
   );
 }

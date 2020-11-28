@@ -4,8 +4,9 @@ import { SCREEN_HEIGHT } from "../global/globalVariables";
 import Loader from "./Loader";
 import workoutService from "../services/workoutService";
 import dietService from "../services/dietService";
+import { useLinkProps } from "@react-navigation/native";
 
-export default Questionnaire = ({questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation}) => {
+export default Questionnaire = ({name, questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation}) => {
   const [markedAnswer, setMarkedAnswer] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const viewNextQuestion = async () => {
@@ -18,11 +19,13 @@ export default Questionnaire = ({questions, question, setAnswers, answers, quest
       const workout = await workoutService.createWorkout(answers);
       const diet = await dietService.createDiet(answers);
 
+      console.log(`workout:`);
       console.log(workout);
+      console.log(`diet:`);
       console.log(diet);
 
-      setIsProcessing(false);
-      navigation.navigate("RegimePreview", { workotPlan: workout, diet: diet })
+      // setIsProcessing(false);
+      navigation.navigate("RegimePreview", { workout: workout, diet: diet })
     }
     else {
       setAnswers({
@@ -45,7 +48,7 @@ export default Questionnaire = ({questions, question, setAnswers, answers, quest
     ? <Loader/>
     : 
     <View>
-      <Text style={{textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12}}>First we have to get to know you {"Viktor"}</Text>
+      <Text style={{textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12}}>First we have to get to know you {name}</Text>
       <View style={styles.questionnaireContainer}>
         <View>
           <Text style={{fontSize: 17, textAlign: "center"}}>{question.question}</Text>
@@ -55,7 +58,7 @@ export default Questionnaire = ({questions, question, setAnswers, answers, quest
             <TouchableOpacity
               style={[styles.answerButton, markedAnswer === answer.id ? styles.selectedAnswerBackground : { }]}
               key={index}
-              onPress={() => setMarkedAnswer(answer.id)}
+              onPress={() => {setMarkedAnswer(answer.id)}}
             >
               <Text style={{textAlign: "center"}}>{answer.text}</Text>
             </TouchableOpacity>
