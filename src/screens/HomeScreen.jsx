@@ -9,7 +9,8 @@ const HomeScreen = (props) => {
   useEffect(() => {
     const getToken = async () => {
       let token = await AsyncStorage.getItem('fb_token');
-      if (token) {
+      if (token) { 
+        let name = await getUserNameAsync();
         let name = await getUserNameAsync();
         props.navigation.navigate("Questionnaire", { name })
       }
