@@ -1,28 +1,28 @@
 import { BASEURI } from "../global/globalVariables";
 import api from "./api";
 import axios from "axios";
-
+import { trainingPlan } from "../global/еxampleTrainingProgram";
 export default workoutService = {
   createWorkout: async (model) => {
-    return new Promise((resolve, reject) => {
+    try {
+      let newModel = JSON.stringify(model);
+      console.log(model);
       const endPoint = `${BASEURI}/api/trainings/create`;
-      axios.post(
-        endPoint, 
+      const { data } = await axios.post(
+        endPoint,
         {
-          model
+          model,
         },
         {
           headers: {
             "Content-Type": "application/json"
           }
         }
-      ).then(response => {
-        resolve(response.data)
-      })
-      .catch(error => {
-          console.error('error', error);
-          reject(error)
-      });
-    })
+      );
+      return data;
+    } catch (err) {
+      return trainingPlan;
+    }
+
   }
 };

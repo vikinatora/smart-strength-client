@@ -6,35 +6,31 @@ import workoutService from "../services/workoutService";
 import dietService from "../services/dietService";
 import { useLinkProps } from "@react-navigation/native";
 
-export default Questionnaire = ({name, questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation}) => {
+export default Questionnaire = ({ name, questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation }) => {
   const [markedAnswer, setMarkedAnswer] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const viewNextQuestion = async () => {
     if (questionIndex === questions.length - 1) {
-      setAnswers({
+      let fullAnswers = {
         ...answers,
-        [question.value]: markedAnswer,
-      });
-      setMarkedAnswer(answers[questions[questionIndex].value]); 
-
+        [question.value]: markedAnswer
+      }
       setIsProcessing(true);
-      
-      console.log("Processing...");
-      console.log(answers);
 
-      const workout = await workoutService.createWorkout(answers);
-      const diet = await dietService.createDiet(answers);
-      
+      console.log("Processing...");
+      const workout = await workoutService.createWorkout(fullAnswers);
+      const diet = await dietService.createDiet(fullAnswers);
+
       setIsProcessing(false);
       navigation.navigate("RegimePreview", { workout: workout, diet: diet })
     }
     else {
       setAnswers({
         ...answers,
-        [question.value]: markedAnswer,
+        [question.value]: markedAnswer
       });
       let q = questionIndex + 1;
-      setMarkedAnswer(answers[questions[q].value]); 
+      setMarkedAnswer(answers[questions[q].value]);
       setQuestionIndex(questionIndex + 1);
     }
   }
@@ -44,48 +40,57 @@ export default Questionnaire = ({name, questions, question, setAnswers, answers,
     setQuestionIndex(q)
     setMarkedAnswer(answers[questions[q].value]);
   }
+
+  const onNumberInputChange = (text) => {
+    console.log(text);
+    setMarkedAnswer(text);
+  }
   return (
     isProcessing
-    ? <Loader/>
-    : 
-    <View>
-      <Text style={{textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12}}>First we have to get to know you {name}</Text>
-      <View style={styles.questionnaireContainer}>
-        <View>
-          <Text style={{fontSize: 17, textAlign: "center"}}>{question.question}</Text>
-        </View>
-        <View style={{marginTop: 10}}>
-          {question.answers.map((answer, index) => (
+      ? <Loader />
+      :
+      <View>
+        <Text style={{ textAlign: "center", fontSize: 16, marginTop: SCREEN_HEIGHT / 12 }}>First we have to get to know you {name}</Text>
+        <View style={styles.questionnaireContainer}>
+          <View>
+            <Text style={{ fontSize: 17, textAlign: "center" }}>{question.question}</Text>
+          </View>
+          <View style={{ marginTop: 10 }}>
+            {
+              question.customAction
+                ? question.renderAnswerComponent(onNumberInputChange, markedAnswer)
+                : question.answers.map((answer, index) => (
+                  <TouchableOpacity
+                    style={[styles.answerButton, markedAnswer === answer.id ? styles.selectedAnswerBackground : {}]}
+                    key={index}
+                    onPress={() => { setMarkedAnswer(answer.id) }}
+                  >
+                    <Text style={{ textAlign: "center" }}>{answer.text}</Text>
+                  </TouchableOpacity>
+                ))
+            }
+          </View>
+          <View style={styles.footerContainer}>
             <TouchableOpacity
-              style={[styles.answerButton, markedAnswer === answer.id ? styles.selectedAnswerBackground : { }]}
-              key={index}
-              onPress={() => {setMarkedAnswer(answer.id)}}
+              disabled={questionIndex ? false : true}
+              style={[{ width: "45%", backgroundColor: "#bababa", padding: 5, borderRadius: 5, marginVertical: 5 }, questionIndex ? {} : { opacity: 0.5 }]}
+              onPress={viewPreviousQuestion}
             >
-              <Text style={{textAlign: "center"}}>{answer.text}</Text>
+              <Text style={{ textAlign: "center" }}>Previous</Text>
             </TouchableOpacity>
-          ))}
-        </View>
-        <View style={styles.footerContainer}>
-          <TouchableOpacity
-            disabled={questionIndex ? false : true}
-            style={[{width: "45%", backgroundColor: "#bababa", padding: 5, borderRadius: 5, marginVertical: 5}, questionIndex ? { } : {opacity: 0.5}]}
-            onPress={viewPreviousQuestion}
-          >
-            <Text style={{textAlign: "center"}}>Previous</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            disabled={+markedAnswer > 0 ? false : true}
-            style={[
-              {width: "45%", backgroundColor: "#bababa", padding: 5, borderRadius: 5, marginVertical: 5},
-              +markedAnswer ? { } : {opacity: 0.5}
-            ]}
-            onPress={viewNextQuestion}
-          >
-            <Text style={[{textAlign: "center"}]}>Next</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              disabled={+markedAnswer > 0 ? false : true}
+              style={[
+                { width: "45%", backgroundColor: "#bababa", padding: 5, borderRadius: 5, marginVertical: 5 },
+                +markedAnswer ? {} : { opacity: 0.5 }
+              ]}
+              onPress={viewNextQuestion}
+            >
+              <Text style={[{ textAlign: "center" }]}>Next</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
   )
 }
 

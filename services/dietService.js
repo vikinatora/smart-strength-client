@@ -1,13 +1,14 @@
 import { BASEURI } from "../global/globalVariables"
 import axios from "axios";
 import api from "./api";
+import { diet } from "../global/еxampleTrainingProgram";
 
 export default dietService = {
   createDiet: async (model) => {
     const endPoint = `${BASEURI}/api/diets/create`;
     try {
       const { data } = await axios.post(
-        endPoint, 
+        endPoint,
         {
           model,
         },
@@ -16,12 +17,12 @@ export default dietService = {
             "Content-Type": "application/json"
           }
         }
-      );  
+      );
       return data;
     }
-    catch(err) {
+    catch (err) {
       console.log(err);
-      return null;
+      return diet;
     }
   }
 }
