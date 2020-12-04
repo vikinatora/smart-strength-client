@@ -11,6 +11,12 @@ export default Questionnaire = ({name, questions, question, setAnswers, answers,
   const [isProcessing, setIsProcessing] = useState(false);
   const viewNextQuestion = async () => {
     if (questionIndex === questions.length - 1) {
+      setAnswers({
+        ...answers,
+        [question.value]: markedAnswer,
+      });
+      setMarkedAnswer(answers[questions[questionIndex].value]); 
+
       setIsProcessing(true);
       
       console.log("Processing...");

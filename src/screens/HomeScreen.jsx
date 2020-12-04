@@ -11,7 +11,6 @@ const HomeScreen = (props) => {
       let token = await AsyncStorage.getItem('fb_token');
       if (token) { 
         let name = await getUserNameAsync();
-        let name = await getUserNameAsync();
         props.navigation.navigate("Questionnaire", { name })
       }
     }

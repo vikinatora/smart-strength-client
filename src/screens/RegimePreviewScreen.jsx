@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from "react-native";
 import DietPreview from "../../components/DietPreview";
 import TrainingProgramPreview from "../../components/TrainingProgramPreview";
 import { STATUSBAR_HEIGHT } from "../../global/globalVariables";
-
+import Schedule from "../../components/Schedule";
 const RegimePreviewScreen = (props) => {
   const { workout, diet } = props.route.params;
   useEffect(() => {
