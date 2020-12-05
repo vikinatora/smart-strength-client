@@ -7,12 +7,9 @@ export default workoutService = {
     try {
       let newModel = JSON.stringify(model);
       console.log(model);
-      const endPoint = `${BASEURI}/api/trainings/create`;
+      const endPoint = `${BASEURI}/api/trainings/create?dietExperience=${model.dietExperience}&fitnessGoal=${model.fitnessGoal}&progressionRate=${model.progressionRate}&trainingDuration=${model.trainingDuration}&trainingExperience=${model.trainingExperience}&workoutPreference=${model.workoutPreference}&workoutsPerWeek=${model.workoutsPerWeek}`;
       const { data } = await axios.post(
         endPoint,
-        {
-          model,
-        },
         {
           headers: {
             "Content-Type": "application/json"

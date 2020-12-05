@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput } from 'react-native';
+import { View, TextInput, StyleSheet, Text } from 'react-native';
 
 export default newQuestions = [
   {
@@ -12,28 +12,51 @@ export default newQuestions = [
       ]
   },
   {
-    value: "weight",
-    question: "How much do you weigh (in kilograms)?",
+    value: "age",
+    question: "What's your age?",
     customAction: true,
-    renderAnswerComponent: (onChanged, state) => (<TextInput
-      keyboardType='numeric'
-      onChangeText={(text) => onChanged(text)}
-      value={state}
-      maxLength={3}
-    />)
+    renderAnswerComponent: (onChanged, state) => (
+      <View style={styles.inputContainer}>
+        <TextInput
+          keyboardType='numeric'
+          onChangeText={(text) => onChanged(text)}
+          style={styles.numberInputNoSuffix}
+          value={state}
+          maxLength={3}
+        />
+      </View>)
+  },
+  {
+    value: "weight",
+    question: "How much do you weigh?",
+    customAction: true,
+    renderAnswerComponent: (onChanged, state) => (
+      <View style={styles.inputContainer}>
+        <TextInput
+          keyboardType='numeric'
+          onChangeText={(text) => onChanged(text)}
+          style={styles.numberInput}
+          value={state}
+          maxLength={3}
+        />
+        <Text style={styles.prefix}>kg</Text>
+      </View>)
   },
   {
     value: "height",
-    question: "How tall are you (in centimeters)?",
+    question: "How tall are you?",
     customAction: true,
     renderAnswerComponent: (onChanged, state) => (
-      <TextInput
-        keyboardType='numeric'
-        onChangeText={(text) => onChanged(text)}
-        value={state}
-        maxLength={3}
-      />
-    )
+      <View style={styles.inputContainer}>
+        <TextInput
+          keyboardType='numeric'
+          onChangeText={(text) => onChanged(text)}
+          style={styles.numberInput}
+          value={state}
+          maxLength={3}
+        />
+        <Text style={styles.prefix}>cm</Text>
+      </View>)
   },
   {
     value: "fitnessGoal",
@@ -57,12 +80,12 @@ export default newQuestions = [
   },
   {
     value: "workoutsPerWeek",
-    question: "How many times per week do you workout?",
+    question: "How many times per week can you workout?",
     answers: [
-      { id: "1", text: "I don't workout at all" },
-      { id: "2", text: "1-3 times" },
-      { id: "3", text: "3-5 times" },
-      { id: "4", text: "More than 5 times" }
+      { id: "3", text: "3 times" },
+      { id: "4", text: "4 times" },
+      { id: "5", text: "5 times" },
+      { id: "6", text: "More than 5 times" }
     ]
   },
   {
@@ -138,3 +161,28 @@ export default newQuestions = [
   //   ]
   // }
 ];
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginHorizontal: 10,
+    borderRadius: 10
+  },
+  prefix: {
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    color: 'black'
+  },
+  numberInput: {
+    width: "50%",
+    textAlign: "right"
+  },
+  numberInputNoSuffix: {
+    width: "100%",
+    textAlign: "center"
+
+  }
+})

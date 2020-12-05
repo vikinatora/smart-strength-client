@@ -1,47 +1,48 @@
-export const trainingPlan = 
+export const trainingPlan =
 {
   "name": "Push/Pull/Legs with slow reps",
-  "workouts":  [
-     {
+  "workouts": [
+    {
       "difficulty": 1,
-      "excercises":  [
-         {
+      "day": "Monday",
+      "excercises": [
+        {
           "name": "Bench press",
           "reps": 8,
           "sets": 4,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Dumbell shoulder press",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Incline dumbell press",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Lateral raises",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Cable crossover",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Dips",
           "reps": 10,
           "sets": 3,
           "tempo": "normal",
         },
-         {
+        {
           "name": "Triceps Pushdown",
           "reps": 10,
           "sets": 3,
@@ -49,40 +50,41 @@ export const trainingPlan =
         },
       ],
     },
-     {
+    {
       "difficulty": 1,
-      "excercises":  [
-         {
+      "day": "Tuesday",
+      "excercises": [
+        {
           "name": "Pull ups",
           "reps": 8,
           "sets": 4,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Seated cable rows",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Pulldown",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Face pulls",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Ez bar curls",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Hammer curls",
           "reps": 10,
           "sets": 3,
@@ -90,34 +92,35 @@ export const trainingPlan =
         },
       ],
     },
-     {
+    {
       "difficulty": 1,
+      "day": "Wednesday",
       "excercises": [
-         {
+        {
           "name": "Squats",
           "reps": 8,
           "sets": 4,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Romanian deadlift",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Leg press",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Leg extensions",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Calf raises",
           "reps": 10,
           "sets": 3,
@@ -125,46 +128,47 @@ export const trainingPlan =
         },
       ],
     },
-     {
+    {
       "difficulty": 1,
-      "excercises":  [
-         {
+      "day": "Friday",
+      "excercises": [
+        {
           "name": "Bench press",
           "reps": 8,
           "sets": 4,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Dumbell shoulder press",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Incline dumbell press",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Lateral raises",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Cable crossover",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Dips",
           "reps": 10,
           "sets": 3,
           "tempo": "normal",
         },
-         {
+        {
           "name": "Triceps Pushdown",
           "reps": 10,
           "sets": 3,
@@ -172,40 +176,41 @@ export const trainingPlan =
         },
       ],
     },
-     {
+    {
       "difficulty": 1,
-      "excercises":  [
-         {
+      "day": "Saturday",
+      "excercises": [
+        {
           "name": "Pull ups",
           "reps": 8,
           "sets": 4,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Seated cable rows",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Pulldown",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Face pulls",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Ez bar curls",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Hammer curls",
           "reps": 10,
           "sets": 3,
@@ -213,34 +218,35 @@ export const trainingPlan =
         },
       ],
     },
-     {
+    {
       "difficulty": 1,
-      "excercises":  [
-         {
+      "day": "Sunday",
+      "excercises": [
+        {
           "name": "Squats",
           "reps": 8,
           "sets": 4,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Romanian deadlift",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Leg press",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Leg extensions",
           "reps": 10,
           "sets": 3,
           "tempo": "slow",
         },
-         {
+        {
           "name": "Calf raises",
           "reps": 10,
           "sets": 3,
@@ -251,7 +257,7 @@ export const trainingPlan =
   ],
 }
 
-export const diet = 
+export const diet =
 {
   "calories": 2600,
   "carbs": 240,
