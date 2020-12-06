@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, Platform, NativeModules } from "react-native";
-import { useFonts, OpenSans_400Regular} from '@expo-google-fonts/open-sans';
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity, Platform, NativeModules } from "react-native";
+import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import Feed from "../../components/Feed";
 import Log from "../../components/Log";
 import { AppLoading } from 'expo';
 import { FontAwesome } from "@expo/vector-icons";
 
-
-import {SCREEN_HEIGHT, STATUSBAR_HEIGHT} from "../../global/globalVariables";
+import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../../global/globalVariables";
 
 const QuestionnaireScreen = (props) => {
   const [showFeed, setShowFeed] = useState(true);
@@ -20,24 +19,24 @@ const QuestionnaireScreen = (props) => {
 
   return (
     !fontsLoaded
-    ? <AppLoading/>
-    : <View>
+      ? <AppLoading />
+      : <View>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity activeOpacity={0.5} onPress={() => {setShowFeed(true); setShowLog(false)}} style={[styles.navigationButton, styles.feedButton]}>
+          <TouchableOpacity activeOpacity={0.5} onPress={() => { setShowFeed(true); setShowLog(false) }} style={[styles.navigationButton, styles.feedButton]}>
             <Text style={styles.buttonText}>
               <FontAwesome size={24} name="home" color="white" /> Feed
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.5} onPress={() => {setShowLog(true); setShowFeed(false)}} style={[styles.navigationButton, styles.logButton]}>
+          <TouchableOpacity activeOpacity={0.5} onPress={() => { setShowLog(true); setShowFeed(false) }} style={[styles.navigationButton, styles.logButton]}>
             <Text style={styles.buttonText}>
               <FontAwesome size={20} name="calendar-plus-o" color="white" /> Log
             </Text>
           </TouchableOpacity>
         </View>
         {
-          showFeed?
-          <Feed />
-          :<Log />
+          showFeed ?
+            <Feed />
+            : <Log />
         }
       </View>
   );
@@ -73,4 +72,3 @@ const styles = StyleSheet.create({
 });
 
 export default QuestionnaireScreen;
- 

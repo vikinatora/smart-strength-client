@@ -2,16 +2,18 @@ import React, { Component, useEffect } from "react";
 import { Text, StyleSheet, AsyncStorage, TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
 import * as actions from '../../actions';
-import { useFonts, OpenSans_400Regular} from '@expo-google-fonts/open-sans';
+import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
 
 const HomeScreen = (props) => {
   useEffect(() => {
     const getToken = async () => {
       let token = await AsyncStorage.getItem('fb_token');
-      if (token) { 
+      if (token) {
         let name = await getUserNameAsync();
-        props.navigation.navigate("Questionnaire", { name })
+        // props.navigation.navigate("Questionnaire", { name })
+        props.navigation.navigate("Feed", { name })
+
       }
     }
     getToken();
@@ -23,19 +25,19 @@ const HomeScreen = (props) => {
 
   return (
     !fontsLoaded
-    ? <AppLoading/>
-    : <View>
-      <Text style={styles.text}>Welcome to Smart-Strength!</Text>
-      {
-      AsyncStorage.getItem('fb_token') != null
-    ?   <TouchableOpacity activeOpacity={0.5} onPress={() => login(props)} style={styles.button}>
-          <Text style={styles.buttonText}>Start your fitness journey now!</Text>
-        </TouchableOpacity>
-  
-      : null
-      }
-        
-    </View>
+      ? <AppLoading />
+      : <View>
+        <Text style={styles.text}>Welcome to Smart-Strength!</Text>
+        {
+          AsyncStorage.getItem('fb_token') != null
+            ? <TouchableOpacity activeOpacity={0.5} onPress={() => login(props)} style={styles.button}>
+              <Text style={styles.buttonText}>Start your fitness journey now!</Text>
+            </TouchableOpacity>
+
+            : null
+        }
+
+      </View>
   );
 }
 const login = async (props) => {
@@ -44,7 +46,7 @@ const login = async (props) => {
   console.log(token)
   let name = await getUserNameAsync();
   console.log(`name: ${name}`);
-  props.navigation.navigate("Questionnaire", { namw })
+  props.navigation.navigate("Questionnaire", { name })
 
 }
 
@@ -54,7 +56,7 @@ const getUserNameAsync = async () => {
   return name;
 }
 
-const requestAsync = async (path, token) =>{
+const requestAsync = async (path, token) => {
   let resolvedToken = token;
   if (!token) {
     const auth = await Facebook.getAuthenticationCredentialAsync();
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
   button: {
     height: 70,
     fontSize: 30,
-    backgroundColor: "#1E6738",
+    backgroundColor: "#88983b",
     justifyContent: 'center',
     alignSelf: "center",
     borderRadius: 10,
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     textAlign: "center",
+    color: "white"
   }
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {View, Text, StyleSheet} from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import DietPreview from "../../components/DietPreview";
 import TrainingProgramPreview from "../../components/TrainingProgramPreview";
 import { STATUSBAR_HEIGHT } from "../../global/globalVariables";
@@ -18,11 +18,13 @@ const RegimePreviewScreen = (props) => {
       <DietPreview
         diet={diet}
       />
+      <Button title={"Go to feed"} onPress={() => { props.navigation.navigate("Feed") }}>
+      </Button>
     </View>
   )
 };
 const styles = StyleSheet.create({
-  container:{
+  container: {
     marginTop: STATUSBAR_HEIGHT,
     width: "85%",
   }
