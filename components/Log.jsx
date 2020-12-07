@@ -13,9 +13,9 @@ const Log = (props) => {
   const [workoutState, setWorkoutState] = useState({});
   const [setNumber, setSetNumber] = useState(1);
   const [currSetWeight, setCurrSetWeight] = useState(0);
-  const [setReps, setSetReps] = useState(0);
-  const [setsWeightArray, setSetsWeightArray] = useState([]);
-  const [setsRepsArray, setRepsArray] = useState([]);
+  const [weightsArray, setWeightsArray] = useState([]);
+  const [reps, setReps] = useState(8);
+  const [repsArray, setRepsArray] = useState([]);
   const [currExcercise, setCurrExcercise] = useState({});
   let [fontsLoaded] = useFonts({
     OpenSans_400Regular
@@ -28,43 +28,86 @@ const Log = (props) => {
     setWorkoutState(trainingPlan.workouts[0]);
     let currExcercise = trainingPlan.workouts[0].excercises[excerciseIndex];
     setCurrExcercise(currExcercise);
-    setSetReps(trainingPlan.workouts[0].excercises[excerciseIndex].reps)
+    const reps = trainingPlan.workouts[0].excercises[excerciseIndex].reps;
     let newSetsWeight = [];
     let newRepsWeight = [];
     for (let i = 0; i < currExcercise.sets; i++) {
       newSetsWeight.push(0);
-      newRepsWeight.push(trainingPlan.workouts[0].excercises[excerciseIndex].reps);
+      newRepsWeight.push(reps);
     }
 
-    setSetsWeightArray(newSetsWeight);
+    setWeightsArray(newSetsWeight);
+    setRepsArray(newRepsWeight);
+    setReps(reps)
+    console.log(`initial reps: ${reps}`);
   }, []);
 
   useEffect(() => {
+    console.log('changed set number');
     findWorkingSetWeight();
+    findWorkingReps(setNumber);
   }, [setNumber]);
 
   useEffect(() => {
+    console.log('changed exc index');
     setSetNumber(1);
     findWorkingSetWeight();
+    findWorkingReps(1, excerciseIndex);
+    if (!workoutState) {
+      console.log("undefined workoutState");
+      return;
+    }
+    if (!excerciseIndex && excerciseIndex != 0) {
+      console.log("undefined excerciseIndex");
+      return;
+    }
+    if (!workoutState.excercises) {
+      console.log("undefined workoutState.excercises");
+      return;
+    }
+    if (!workoutState.excercises[excerciseIndex]) {
+      console.log("workoutState.excercises[excerciseIndex]");
+      return;
+    }
+    if (workoutState && (excerciseIndex || excerciseIndex === 0) && workoutState.excercises && workoutState.excercises[excerciseIndex]) {
+      console.log("no undefined");
+      let newCurrExcercise = workoutState.excercises[excerciseIndex];
+      setCurrExcercise(newCurrExcercise);
+      let currSetWeightArray = newCurrExcercise.setsWeight;
+      let reps = workoutState.excercises[excerciseIndex].reps;
+      console.log(`new reps: ${reps}`);
+      if (!currSetWeightArray || !currSetWeightArray.length) {
+        let newSetsWeight = [];
+        let newRepsWeight = [];
+        for (let i = 0; i < newCurrExcercise.sets; i++) {
+          newSetsWeight.push(0);
+          newRepsWeight.push(reps);
+        }
+
+        setWeightsArray(newSetsWeight);
+        setRepsArray(newRepsWeight);
+        setReps(reps);
+      } else {
+        setWeightsArray(currSetWeightArray);
+      }
+    }
+
   }, [excerciseIndex])
 
   const editDefaultReps = (newReps) => {
     const newWorkoutLogState = JSON.parse(JSON.stringify(workoutState));
     if (newWorkoutLogState.excercises && newWorkoutLogState.excercises[excerciseIndex]) {
-      console.log(excerciseIndex)
+      console.log(`exc Index: ${excerciseIndex}`)
       const newExcercises = JSON.parse(JSON.stringify(newWorkoutLogState.excercises));
-      console.log(newExcercises)
       const newExcerciseState = JSON.parse(JSON.stringify(newExcercises[excerciseIndex]));
-      const newRepsArray = JSON.parse(JSON.stringify(setRepsArray));
+      const newRepsArray = JSON.parse(JSON.stringify(repsArray));
       console.log(`old reps: ${newRepsArray}`);
-
       newRepsArray[setNumber - 1] = newReps;
-      setSetsWeightArray(newRepsArray);
+      setRepsArray(newRepsArray);
       newExcerciseState.setsReps = newRepsArray;
       newExcercises[excerciseIndex] = newExcerciseState;
       newWorkoutLogState.excercises = newExcercises;
       console.log(`new reps: ${newRepsArray}`);
-
       setWorkoutState(newWorkoutLogState);
     }
 
@@ -72,6 +115,21 @@ const Log = (props) => {
   const findWorkingSetWeight = () => {
     let weight = workoutState.excercises ? workoutState.excercises[excerciseIndex].setsWeight ? workoutState.excercises[excerciseIndex].setsWeight[setNumber - 1] : 0 : 0;
     onWeightChange(weight);
+  }
+  const findWorkingReps = (newSetNumber, newExcerciseIndex) => {
+    console.log(`new set number: ${newSetNumber}`);
+    console.log(`new excerciseIndex number: ${newExcerciseIndex || excerciseIndex}`);
+    let reps = workoutState.excercises ?
+      workoutState.excercises[newExcerciseIndex || excerciseIndex].setsReps ?
+        workoutState.excercises[newExcerciseIndex || excerciseIndex].setsReps[newSetNumber - 1]
+        : 0
+      : 0;
+    if (reps) {
+      setReps(reps);
+      console.log(`new reps: ${reps}`);
+
+      editDefaultReps(reps);
+    }
   }
 
   const renderSets = (setsCount) => {
@@ -98,7 +156,7 @@ const Log = (props) => {
     ));
   }
   const onWeightChange = (weight) => {
-    let newSetsWeight = JSON.parse(JSON.stringify(setsWeightArray));
+    let newSetsWeight = JSON.parse(JSON.stringify(weightsArray));
     newSetsWeight[setNumber - 1] = weight;
     setCurrSetWeight(weight);
   }
@@ -107,11 +165,11 @@ const Log = (props) => {
     const newWorkoutLogState = JSON.parse(JSON.stringify(workoutState));
     const newExcercises = JSON.parse(JSON.stringify(newWorkoutLogState.excercises));
     const newExcerciseState = JSON.parse(JSON.stringify(newExcercises[excerciseIndex]));
-    const newSetsWeight = JSON.parse(JSON.stringify(setsWeightArray));
+    const newSetsWeight = JSON.parse(JSON.stringify(weightsArray));
     console.log(`old sets weight: ${newSetsWeight}`);
 
     newSetsWeight[setNumber - 1] = currSetWeight;
-    setSetsWeightArray(newSetsWeight);
+    setWeightsArray(newSetsWeight);
     newExcerciseState.setsWeight = newSetsWeight;
     newExcercises[excerciseIndex] = newExcerciseState;
     newWorkoutLogState.excercises = newExcercises;
@@ -124,7 +182,6 @@ const Log = (props) => {
   const hasSavedSetWeight = () => {
     if (workoutState.excercises[excerciseIndex].setsWeight) {
       let weight = workoutState.excercises[excerciseIndex].setsWeight[setNumber - 1];
-      console.log(`saved set weight: ${weight}`);
       if (weight > 0) {
         return true;
       } else {
@@ -181,10 +238,10 @@ const Log = (props) => {
             </View>
             <View style={{ flex: 0.7 }}>
               <Picker
-                selectedValue={`rep${setReps}`}
+                selectedValue={`rep${reps}`}
                 style={{ height: 50, width: "100%" }}
                 onValueChange={(itemValue, itemIndex) => {
-                  setSetReps(itemIndex + 1)
+                  setReps(itemIndex + 1)
                   editDefaultReps(itemIndex + 1);
                 }}
               >
@@ -217,7 +274,7 @@ const Log = (props) => {
                 <View>
                   <TouchableOpacity
                     style={styles.mainButton}
-                    onPress={() => { setExcerciseIndex(excerciseIndex + 1) }}
+                    onPress={() => { setExcerciseIndex(excerciseIndex + 1); }}
                   >
                     <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Go to next excercise</Text>
                   </TouchableOpacity>

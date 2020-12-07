@@ -8,21 +8,21 @@ export const trainingPlan =
       "excercises": [
         {
           "name": "Bench press",
-          "reps": 8,
+          "reps": 6,
           "sets": 4,
           "tempo": "slow",
         },
         {
           "name": "Dumbell shoulder press",
-          "reps": 10,
+          "reps": 12,
           "sets": 3,
-          "tempo": "slow",
+          "tempo": "fast",
         },
         {
           "name": "Incline dumbell press",
           "reps": 10,
           "sets": 3,
-          "tempo": "slow",
+          "tempo": "normal",
         },
         {
           "name": "Lateral raises",
