@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import DietPreview from "../../components/DietPreview";
 import TrainingProgramPreview from "../../components/TrainingProgramPreview";
-import { STATUSBAR_HEIGHT } from "../../global/globalVariables";
+
 const RegimePreviewScreen = (props) => {
   const workout = [
     {
@@ -272,6 +272,7 @@ const RegimePreviewScreen = (props) => {
   protein: 50,
   goal: "Build muscle"
   }
+
   useEffect(() => {
     console.log(workout);
     console.log(diet);
@@ -290,9 +291,13 @@ const RegimePreviewScreen = (props) => {
   )
 };
 const styles = StyleSheet.create({
-  container: {
-    marginTop: STATUSBAR_HEIGHT,
-    width: "85%",
-  }
+  indicator: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    position: 'absolute',
+  },
 });
 export default RegimePreviewScreen;
