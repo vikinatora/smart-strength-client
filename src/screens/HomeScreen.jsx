@@ -8,15 +8,16 @@ import { AppLoading } from 'expo';
 const HomeScreen = (props) => {
   useEffect(() => {
     const getToken = async () => {
+      await AsyncStorage.removeItem("fb_token");
       let token = await AsyncStorage.getItem('fb_token');
       if (token) {
         let name = await getUserNameAsync();
         // props.navigation.navigate("Questionnaire", { name })
-        props.navigation.navigate("Feed", { name })
+        props.navigation.navigate("RegimePreview", { name })
 
       }
     }
-    getToken();
+   getToken();
   }, []);
 
   let [fontsLoaded] = useFonts({
@@ -46,7 +47,8 @@ const login = async (props) => {
   console.log(token)
   let name = await getUserNameAsync();
   console.log(`name: ${name}`);
-  props.navigation.navigate("Questionnaire", { name })
+  // props.navigation.navigate("Questionnaire", { name })
+  props.navigation.navigate("RegimePreview", { name })
 
 }
 
