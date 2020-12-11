@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import * as actions from '../../actions';
 import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
+import usersService from "../../services/usersService";
+import * as Facebook from 'expo-facebook';
 
 const HomeScreen = (props) => {
   useEffect(() => {
@@ -11,8 +13,8 @@ const HomeScreen = (props) => {
       let token = await AsyncStorage.getItem('fb_token');
       if (token) {
         let name = await getUserNameAsync();
-        // props.navigation.navigate("Questionnaire", { name })
-        props.navigation.navigate("Feed", { name })
+        props.navigation.navigate("Questionnaire", { name })
+        // props.navigation.navigate("Feed", { name })
 
       }
     }
@@ -58,20 +60,27 @@ const getUserNameAsync = async () => {
 
 const requestAsync = async (path, token) => {
   let resolvedToken = token;
-  if (!token) {
-    const auth = await Facebook.getAuthenticationCredentialAsync();
-    if (!auth) {
-      throw new Error(
-        'User is not authenticated. Ensure `logInWithReadPermissionsAsync` has successfully resolved before attempting to use the FBSDK Graph API.'
-      );
-    }
-    resolvedToken = auth.token;
-    AsyncStorage.setItem('fb_token', resolvedToken);
-  }
+  // if (!token) {
+  //   const auth = await Facebook.getAuthenticationCredentialAsync();
+  //   if (!auth) {
+  //     throw new Error(
+  //       'User is not authenticated. Ensure `logInWithReadPermissionsAsync` has successfully resolved before attempting to use the FBSDK Graph API.'
+  //     );
+  //   }
+  //   resolvedToken = auth.token;
+  //   AsyncStorage.setItem('fb_token', resolvedToken);
+  // }
   const response = await fetch(
     `https://graph.facebook.com/${path}?access_token=${encodeURIComponent(resolvedToken)}`
   );
   const body = await response.json();
+  const userId = await usersService.createUser({ fullName: body.name, fbToken: resolvedToken });
+  if (userId) {
+    console.log("Created user");
+    await AsyncStorage.setItem("userId", userId)
+  } else {
+    console.log("Couldn't create user");
+  }
   return body;
 }
 

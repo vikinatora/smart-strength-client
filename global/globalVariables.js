@@ -1,4 +1,4 @@
-import {Dimensions, NativeModules } from "react-native";
+import { Dimensions, NativeModules } from "react-native";
 
 const { height } = Dimensions.get('window');
 const { StatusBarManager } = NativeModules;

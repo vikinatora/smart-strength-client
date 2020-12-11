@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, AsyncStorage } from "react-native";
 import { SCREEN_HEIGHT } from "../global/globalVariables";
 import Loader from "./Loader";
 import workoutService from "../services/workoutService";
@@ -18,8 +18,12 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
       setIsProcessing(true);
 
       console.log("Processing...");
-      const workout = await workoutService.createWorkout(fullAnswers);
-      const diet = await dietService.createDiet(fullAnswers);
+      const userId = await AsyncStorage.getItem("userId");
+      if (!userId) {
+        // fetch user id from server
+      }
+      const workout = await workoutService.createWorkout(fullAnswers, userId);
+      const diet = await dietService.createDiet(fullAnswers, userId);
 
       setIsProcessing(false);
       navigation.navigate("RegimePreview", { workout: workout, diet: diet })
