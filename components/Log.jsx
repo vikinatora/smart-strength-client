@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { StyleSheet, View, Text, Picker, TextInput } from "react-native";
+import { StyleSheet, View, Text, Picker, TextInpu, TouchableHighlight, Modal, TextInput } from "react-native";
 import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
 import { setDeep } from "../global/helperFunctions";
 import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../global/globalVariables";
 import { trainingPlan } from "../global/еxampleTrainingProgram";
+import postsService from "../services/postsService";
+import { AsyncStorage } from "react-native";
+import MessageModal from "./MessageModal";
+import { ActivityIndicator } from "react-native";
+import workoutService from "../services/workoutService";
 
 const Log = (props) => {
-
   const [excerciseIndex, setExcerciseIndex] = useState(0);
   const [workoutState, setWorkoutState] = useState({});
   const [setNumber, setSetNumber] = useState(1);
@@ -17,6 +21,15 @@ const Log = (props) => {
   const [reps, setReps] = useState(8);
   const [repsArray, setRepsArray] = useState([]);
   const [currExcercise, setCurrExcercise] = useState({});
+  const [showPostPreview, setShowPostPreview] = useState(false);
+  const [postContent, setPostContent] = useState("");
+  const [showSuccessfulPost, setShowSuccessfulPost] = useState(false);
+  const [showUnsuccessfulPost, setShowUnsuccessfulPost] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
+  const [render, setRender] = useState(false);
+  const [isRestDay, setIsRestDay] = useState(false);
+
+
   let [fontsLoaded] = useFonts({
     OpenSans_400Regular
   });
@@ -24,22 +37,28 @@ const Log = (props) => {
   let repsMax = 12;
 
   useEffect(() => {
-    // TODO: Call API for workout
-    setWorkoutState(trainingPlan.workouts[0]);
-    let currExcercise = trainingPlan.workouts[0].excercises[excerciseIndex];
-    setCurrExcercise(currExcercise);
-    const reps = trainingPlan.workouts[0].excercises[excerciseIndex].reps;
-    let newSetsWeight = [];
-    let newRepsWeight = [];
-    for (let i = 0; i < currExcercise.sets; i++) {
-      newSetsWeight.push(0);
-      newRepsWeight.push(reps);
+    const initForm = async () => {
+      let workout = await workoutService.getTodaysWorkout();
+      setWorkoutState(workout);
+      if (workout) {
+        let currExcercise = workout.excercises[excerciseIndex];
+        setCurrExcercise(currExcercise);
+        const reps = workout.excercises[excerciseIndex].reps;
+        let newSetsWeight = [];
+        let newRepsWeight = [];
+        for (let i = 0; i < currExcercise.sets; i++) {
+          newSetsWeight.push(0);
+          newRepsWeight.push(reps);
+        }
+        setWeightsArray(newSetsWeight);
+        setRepsArray(newRepsWeight);
+        setReps(reps)
+      } else {
+        setIsRestDay(true);
+      }
+      setRender(true);
     }
-
-    setWeightsArray(newSetsWeight);
-    setRepsArray(newRepsWeight);
-    setReps(reps)
-    console.log(`initial reps: ${reps}`);
+    initForm();
   }, []);
 
   useEffect(() => {
@@ -151,9 +170,10 @@ const Log = (props) => {
   }
 
   const renderExcercises = () => {
-    return workoutState.excercises.map((excercise, index) => (
+    return (workoutState.excercises || []).map((excercise, index) => (
       <Picker.Item key={index} label={excercise.name} value={index} />
     ));
+
   }
   const onWeightChange = (weight) => {
     let newSetsWeight = JSON.parse(JSON.stringify(weightsArray));
@@ -190,128 +210,296 @@ const Log = (props) => {
     }
     return false;
   }
+
+  const createPost = async () => {
+    let model = {
+      achievement: `managed to do ${currExcercise.name} for ${reps} reps with ${currSetWeight} kg!`,
+      userId: await AsyncStorage.getItem("userId"),
+      content: postContent
+    }
+    setIsPosting(true);
+    const result = await postsService.createPost(model)
+    setIsPosting(false);
+    if (result) {
+      setShowSuccessfulPost(true);
+    } else {
+      setShowUnsuccessfulPost(true);
+    }
+    setPostContent("");
+    setShowPostPreview(false);
+  }
+
+  const saveWorkout = async () => {
+    let result = await workoutService.saveWorkout(workoutState);
+  }
+
   return (
-    !fontsLoaded
+    !fontsLoaded || !render
       ? <AppLoading />
       :
       <View style={styles.container}>
-        <Text style={{ textAlign: "center", fontSize: 24, marginTop: 10 }}>{workoutState.name || "Today's workout"}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ flex: 0.3 }}>
-            <Text style={styles.bigFontSize}>Excercise: </Text>
+        {isRestDay
+          ? <View style={{ marginTop: 30 }}>
+            <Text style={{ textAlign: "center", fontSize: 28, fontWeight: "bold" }} >Today's a rest day.</Text>
+            <Text style={{ textAlign: "center", fontSize: 22, marginTop: 10 }}>Take a break and do something else. </Text>
+            <Text style={{ textAlign: "center", fontSize: 22, marginTop: 10 }}>You deserve it! 👏 </Text>
           </View>
-          <View style={{ flex: 0.7 }}>
-            <Picker
-              selectedValue={excerciseIndex}
-              onValueChange={(itemValue, itemIndex) => setExcerciseIndex(itemIndex)}
-            >
-              {renderExcercises()}
-            </Picker>
-          </View>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ flex: 0.3 }}>
-            <Text style={styles.bigFontSize}>Set number: </Text>
-          </View>
-          <View style={{ flex: 0.7 }}>
-            <Picker
-              selectedValue={`set${setNumber}`}
-              style={{ height: 50, width: "100%" }}
-              onValueChange={(itemValue, itemIndex) => setSetNumber(itemIndex + 1)}
-            >
-              {renderSets(currExcercise ? currExcercise.sets : 0)}
-            </Picker>
-          </View>
-        </View>
-        <View style={styles.rowContainer}>
-          <View style={{ flex: 0.3 }}>
-            <Text style={styles.bigFontSize}>Tempo: </Text>
-          </View>
-          <View style={{ flex: 0.7 }}>
-            <Text style={styles.bigFontSize}>{currExcercise ? currExcercise.tempo : ""}</Text>
-          </View>
-        </View>
-        <View>
-          <View style={styles.rowContainer}>
-            <View style={{ flex: 0.3 }}>
-              <Text style={styles.bigFontSize}>Reps: </Text>
-            </View>
-            <View style={{ flex: 0.7 }}>
-              <Picker
-                selectedValue={`rep${reps}`}
-                style={{ height: 50, width: "100%" }}
-                onValueChange={(itemValue, itemIndex) => {
-                  setReps(itemIndex + 1)
-                  editDefaultReps(itemIndex + 1);
-                }}
-              >
-                {renderReps(currExcercise ? currExcercise.reps : 0)}
-              </Picker>
-            </View>
-          </View>
-          <View style={styles.rowContainer}>
-            <View style={{ flex: 0.3 }}>
-              <Text style={styles.bigFontSize}>Weight: </Text>
-            </View>
-            <View style={{ flex: 0.7 }}>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  keyboardType='numeric'
-                  onChangeText={(weight) => onWeightChange(weight)}
-                  onSubmitEditing={() => onWeightSubmitEditing()}
-                  style={styles.numberInput}
-                  value={currSetWeight ? currSetWeight.toString() : ""}
-                  maxLength={5}
-                />
-                <Text style={styles.prefix}>kg</Text>
+          :
+          <>
+            <Text style={{ textAlign: "center", fontSize: 24, marginTop: 10 }}>{workoutState.name || "Today's workout"}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 0.3 }}>
+                <Text style={styles.bigFontSize}>Excercise: </Text>
+              </View>
+              <View style={{ flex: 0.7 }}>
+                <Picker
+                  selectedValue={excerciseIndex}
+                  onValueChange={(itemValue, itemIndex) => setExcerciseIndex(itemIndex)}
+                >
+                  {renderExcercises()}
+                </Picker>
               </View>
             </View>
-          </View>
-          <View>
-            {
-              hasSavedSetWeight() && setNumber === currExcercise.sets
-                ?
-                <View>
-                  <TouchableOpacity
-                    style={styles.mainButton}
-                    onPress={() => { setExcerciseIndex(excerciseIndex + 1); }}
-                  >
-                    <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Go to next excercise</Text>
-                  </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 0.3 }}>
+                <Text style={styles.bigFontSize}>Set number: </Text>
+              </View>
+              <View style={{ flex: 0.7 }}>
+                <Picker
+                  selectedValue={`set${setNumber}`}
+                  style={{ height: 50, width: "100%" }}
+                  onValueChange={(itemValue, itemIndex) => setSetNumber(itemIndex + 1)}
+                >
+                  {renderSets(currExcercise ? currExcercise.sets : 0)}
+                </Picker>
+              </View>
+            </View>
+            <View style={styles.rowContainer}>
+              <View style={{ flex: 0.3 }}>
+                <Text style={styles.bigFontSize}>Tempo: </Text>
+              </View>
+              <View style={{ flex: 0.7 }}>
+                <Text style={styles.bigFontSize}>{currExcercise ? currExcercise.tempo : ""}</Text>
+              </View>
+            </View>
+            <View>
+              <View style={styles.rowContainer}>
+                <View style={{ flex: 0.3 }}>
+                  <Text style={styles.bigFontSize}>Reps: </Text>
                 </View>
-                : null
+                <View style={{ flex: 0.7 }}>
+                  <Picker
+                    selectedValue={`rep${reps}`}
+                    style={{ height: 50, width: "100%" }}
+                    onValueChange={(itemValue, itemIndex) => {
+                      setReps(itemIndex + 1)
+                      editDefaultReps(itemIndex + 1);
+                    }}
+                  >
+                    {renderReps(currExcercise ? currExcercise.reps : 0)}
+                  </Picker>
+                </View>
+              </View>
+              <View style={styles.rowContainer}>
+                <View style={{ flex: 0.3 }}>
+                  <Text style={styles.bigFontSize}>Weight: </Text>
+                </View>
+                <View style={{ flex: 0.7 }}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      keyboardType='numeric'
+                      onChangeText={(weight) => onWeightChange(weight)}
+                      onSubmitEditing={() => onWeightSubmitEditing()}
+                      style={styles.numberInput}
+                      value={currSetWeight ? currSetWeight.toString() : ""}
+                      maxLength={5}
+                    />
+                    <Text style={styles.prefix}>kg</Text>
+                  </View>
+                </View>
+              </View>
+              <View>
+                {
+                  hasSavedSetWeight() && excerciseIndex == workoutState.excercises.length - 1 && setNumber == workoutState.excercises[excerciseIndex].sets
+                    ?
+                    <View>
+                      <TouchableOpacity
+                        style={styles.finishButton}
+                        onPress={saveWorkout}
+                      >
+                        <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Finish workout</Text>
+                      </TouchableOpacity>
+                    </View>
+                    : hasSavedSetWeight() && setNumber === currExcercise.sets
+                      ?
+                      <View>
+                        <TouchableOpacity
+                          style={styles.mainButton}
+                          onPress={() => { setExcerciseIndex(excerciseIndex + 1); }}
+                        >
+                          <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Go to next excercise</Text>
+                        </TouchableOpacity>
+                      </View>
+                      : null
+                }
+                {
+                  hasSavedSetWeight() && setNumber !== currExcercise.sets
+                    ?
+                    <View>
+                      <TouchableOpacity
+                        style={styles.mainButton}
+                        onPress={() => { setSetNumber(setNumber + 1) }}
+                      >
+                        <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Next set</Text>
+                      </TouchableOpacity>
+                    </View>
+                    : null
+                }
+                {
+                  hasSavedSetWeight()
+                    ?
+                    <View>
+                      <TouchableOpacity style={styles.secondaryButton}>
+                        <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}
+                          onPress={() => setShowPostPreview(true)}
+                        >Share achievement</Text>
+                      </TouchableOpacity>
+                    </View>
+                    : null
+                }
+              </View>
+            </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={showPostPreview}
+            >
+              <View style={modalStyles.centeredView}>
+                <View style={modalStyles.modalView}>
+                  <Text style={modalStyles.boldModalTextBig}>You are a beast!</Text>
+                  <Text style={modalStyles.boldModalText}>You managed to do {currExcercise.name} for {reps} reps with {currSetWeight} kg!</Text>
+                  <Text style={modalStyles.modalText}>Describe how you feel:</Text>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={{ width: "100%", height: 70, margin: 10 }}
+                      onChangeText={text => setPostContent(text)}
+                      value={postContent}
+                      multiline={true}
+                      maxLength={200}
+                    />
+                  </View>
+                  {
+                    isPosting
+                      ?
+                      <ActivityIndicator style={{ marginTop: 20 }} size="large" />
+                      :
+                      <>
+                        <TouchableHighlight
+                          style={{ ...modalStyles.openButton, backgroundColor: 'white' }}
+                          onPress={() => {
+                            setShowPostPreview(!showPostPreview);
+                          }}>
+                          <Text onPress={createPost} style={modalStyles.blackTextStyle}>Post to your feed</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight
+                          style={{ ...modalStyles.openButton, backgroundColor: '#2196F3' }}
+                          onPress={() => {
+                            setShowPostPreview(false);
+                            setPostContent("");
+                          }}>
+                          <Text style={modalStyles.whiteTextStyle}>Cancel</Text>
+                        </TouchableHighlight>
+                      </>
+                  }
 
-            }
-            {
-              hasSavedSetWeight() && setNumber !== currExcercise.sets
-                ?
-                <View>
-                  <TouchableOpacity
-                    style={styles.mainButton}
-                    onPress={() => { setSetNumber(setNumber + 1) }}
-                  >
-                    <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Next set</Text>
-                  </TouchableOpacity>
                 </View>
+              </View>
+            </Modal>
+            {
+              showSuccessfulPost
+                ? <MessageModal
+                  setShowModal={setShowSuccessfulPost}
+                  showModal={showSuccessfulPost}
+                  message={"Successfully posted your achievement to your feed! 🥳"}
+                  buttonText={"Okay"}
+                />
                 : null
             }
             {
-              hasSavedSetWeight()
-                ?
-                <View>
-                  <TouchableOpacity style={styles.secondaryButton}>
-                    <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Share achievement</Text>
-                  </TouchableOpacity>
-                </View>
+              showUnsuccessfulPost
+                ? <MessageModal
+                  setShowModal={setShowUnsuccessfulPost}
+                  showModal={showUnsuccessfulPost}
+                  message={"Couldn't post your achievement 😞... Please try again in a few moments."}
+                  buttonText={"Okay"}
+                />
                 : null
             }
-          </View>
-        </View>
+          </>
+        }
       </View>
   );
 
 }
-
+const modalStyles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width: "80%",
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    marginTop: 20,
+    backgroundColor: '#F194FF',
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    elevation: 2,
+    width: "80%"
+  },
+  whiteTextStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  blackTextStyle: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  boldModalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: "bold",
+    fontSize: 18
+  },
+  boldModalTextBig: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: "bold",
+    fontSize: 24
+  },
+})
 const styles = StyleSheet.create({
   container: {
     marginTop: SCREEN_HEIGHT / 12,
@@ -368,6 +556,13 @@ const styles = StyleSheet.create({
   secondaryButton: {
     width: "100%",
     backgroundColor: "#3b8898",
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10
+  },
+  finishButton: {
+    width: "100%",
+    backgroundColor: "#D0312D",
     padding: 10,
     borderRadius: 5,
     marginVertical: 10

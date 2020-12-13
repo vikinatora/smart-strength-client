@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import moment from "moment";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -6,31 +6,14 @@ import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 
 export default Post = (props) => {
-  const [post, setPost] = useState({
-    content: "Very proud of my new PR!",
-    created: "2020/11/07",
-    achievment: "benched 100kg for 5 reps",
-    likes: "5",
-    user: {
-      name: "Viktor Todorov",
-      avatar: "https://www.ruf.rice.edu/~power/franco.jpg"
-    }
-  })
-  const [comments, setComments] = useState([{
-    content: "Good work brazzer and don't stop lifting.",
-    created: "2020/11/08",
-    user: {
-      name: "Vasil Hadjiev",
-      avatar: "https://i1.sndcdn.com/avatars-000715800235-f5z5kc-t500x500.jpg"
-    }
-  }]);
+  let defaultAvatar = "https://www.ruf.rice.edu/~power/franco.jpg";
+  let post = props.post
   const [showComments, setShowComments] = useState(false);
-  
 
   const giveLike = () => {
 
   }
-  
+
   const showHideComments = () => {
     showComments ? setShowComments(false) : setShowComments(true);
   }
@@ -39,26 +22,26 @@ export default Post = (props) => {
     <View style={styles.postWrapper}>
       <View style={styles.container}>
         <View style={styles.avatarContainer}>
-          {post.user.avatar && <Image
+          {defaultAvatar && <Image
             resizeMode='contain'
             style={styles.avatar}
-            source={{ uri: post.user.avatar }}
+            source={{ uri: post.author.avatar || defaultAvatar }}
           />}
         </View>
         <View style={styles.contentContainer}>
           <Text>
-            <Text style={[styles.mainText, styles.name]}>{post.user.name}</Text>
+            <Text style={[styles.mainText, styles.name]}>{post.author.name}</Text>
             {' '}
             <Text style={styles.mainText}>
-              {post.achievment}
-              </Text>
+              {post.achievement}
+            </Text>
           </Text>
-          <Text style={[styles.text, styles.created]}>{moment(post.created).fromNow()}</Text>
+          <Text style={[styles.text, styles.created]}>{moment(post.created || "").fromNow()}</Text>
           <Text style={styles.contentText}>
             {post.content}
           </Text>
           <Text style={[styles.text, styles.likeText]}>
-            <Text> {post.likes} respects </Text> <Text>{comments.length} {comments.length > 1 ? "comments" : "comment"}</Text>
+            <Text> {post.likes.length} respects </Text> <Text>{post.comments.length} {post.comments.length > 1 ? "comments" : "comment"}</Text>
           </Text>
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.likeButton}>
@@ -74,17 +57,17 @@ export default Post = (props) => {
           </View>
           {
             showComments
-            ? <View>
-                <CommentInput submitComment={props.submitComment}/>
+              ? <View>
+                <CommentInput submitComment={props.submitComment} />
                 <View style={styles.commentsContainer}>
-                    {comments.map((comment, index) => <Comment key={index} comment={comment}/> )}
+                  {post.comments.map((comment, index) => <Comment key={index} comment={comment} />)}
                 </View>
               </View>
-            : null
+              : null
           }
-          </View>
         </View>
       </View>
+    </View>
   );
 
 }
@@ -115,7 +98,7 @@ const styles = StyleSheet.create({
   },
   commentsText: {
     justifyContent: "flex-end"
-  },  
+  },
   button: {
     fontSize: 18,
     color: "white",

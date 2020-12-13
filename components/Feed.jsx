@@ -1,16 +1,44 @@
-import React, {useEffect, useState} from "react";
-import {StyleSheet, View, Text, Image, ScrollView, RefreshControl } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
 import Post from "./Post";
-import {SCREEN_HEIGHT, STATUSBAR_HEIGHT} from "../global/globalVariables";
+import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../global/globalVariables";
+import feedService from "../services/feedService";
+import MessageModal from "./MessageModal";
+import { ActivityIndicator } from "react-native";
 
 const Feed = (props) => {
+  const [posts, setPosts] = useState([]);
+  const [showFailedToFetchPosts, setShowFailedToFetchPosts] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+
+  useEffect(() => {
+    setIsFetching(true);
+    fetchPosts();
+    setIsFetching(false);
+  }, [])
   let _scrollView = null;
   const [refreshing, setRefreshing] = useState(false);
+
   const onRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    fetchPosts();
+    setRefreshing(false);
+  }
+
+  const fetchPosts = async () => {
+    try {
+      console.log("fetching posts");
+      const posts = await feedService.getFeed();
+      if (posts) {
+        setPosts(posts);
+        console.log("fetchedPosts");
+      } else {
+        setShowFailedToFetchPosts(true);
+      }
+    } catch (err) {
+      setShowFailedToFetchPosts(true);
+    }
+
   }
 
   const submitComment = async (comment) => {
@@ -29,17 +57,34 @@ const Feed = (props) => {
 
   return (
     <View style={styles.componentContainer}>
-    <ScrollView
-      ref={(scrollView) => {_scrollView = scrollView; }}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => onRefresh()}
-        />
+      {
+        isFetching
+          ? <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+          : null
       }
-    >
-        <Post submitComment={submitComment}/>
-    </ScrollView>
+      <ScrollView
+        ref={(scrollView) => { _scrollView = scrollView; }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => onRefresh()}
+          />
+        }
+      >
+        {(posts || []).map((post, index) => (
+          <Post key={index} post={post} submitComment={submitComment} />
+        ))}
+      </ScrollView>
+      {
+        showFailedToFetchPosts ?
+          <MessageModal
+            message={"Couldn't fetch posts... 😞\nPlease try again in a few moments."}
+            buttonText={"Okay"}
+            setShowModal={setShowFailedToFetchPosts}
+            showModal={showFailedToFetchPosts}
+          />
+          : null
+      }
     </View>
   );
 }
