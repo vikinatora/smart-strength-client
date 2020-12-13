@@ -5,6 +5,7 @@ import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../../global/globalVariables";
 import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
 import newQuestions from "../../components/../global/questions";
+import InitialQuestionnaireScreen from "../../components/InitialQuestionnaireScreen"
 const QuestionnaireScreen = (props) => {
   const questions = [
     {
@@ -86,6 +87,7 @@ const QuestionnaireScreen = (props) => {
   ];
   const [answers, setAnswers] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [showGetStartedScreen, setShowGetStartedScreen] = useState(true);
 
   let [fontsLoaded] = useFonts({
     OpenSans_400Regular
@@ -95,16 +97,22 @@ const QuestionnaireScreen = (props) => {
     !fontsLoaded
       ? <AppLoading />
       : <View style={styles.screenContainer}>
-        <Questionnaire
-          name={props.route.params.name.split(" ")[0]}
-          questions={newQuestions}
-          setQuestionIndex={setQuestionIndex}
-          questionIndex={questionIndex}
-          question={newQuestions[questionIndex]}
-          setAnswers={setAnswers}
-          answers={answers}
-          navigation={props.navigation}
-        />
+        {
+          showGetStartedScreen
+            ? <InitialQuestionnaireScreen
+              showThisScreen={setShowGetStartedScreen}
+            />
+            : <Questionnaire
+              name={props.route.params.name.split(" ")[0]}
+              questions={newQuestions}
+              setQuestionIndex={setQuestionIndex}
+              questionIndex={questionIndex}
+              question={newQuestions[questionIndex]}
+              setAnswers={setAnswers}
+              answers={answers}
+              navigation={props.navigation}
+            />
+        }
       </View>
   );
 }
@@ -112,6 +120,8 @@ const QuestionnaireScreen = (props) => {
 const styles = StyleSheet.create({
   screenContainer: {
     marginTop: STATUSBAR_HEIGHT,
+    backgroundColor: "#75A8FF",
+    height: "100%"
   }
 });
 

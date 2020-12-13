@@ -27,10 +27,10 @@ const HomeScreen = (props) => {
       if (token && userId) {
         setSigningIn(true);
         let name = await getUserNameAsync();
-        //props.navigation.navigate("Questionnaire", { name })
+        props.navigation.navigate("Questionnaire", { name })
         //TODO: Check for training program ID and navigate to questionnaire if doesn't exist
         setSigningIn(false);
-        props.navigation.navigate("Feed", { name });
+        // props.navigation.navigate("Feed", { name });
       }
     }
     getToken();
