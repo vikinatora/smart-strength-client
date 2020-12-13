@@ -18,11 +18,12 @@ const RegimePreviewScreen = (props) => {
       <DietPreview
         diet={diet}
       />
-      <Button title={"Go to feed"} onPress={() => { props.navigation.navigate("Feed") }}>
+      <Button title={"Accept training program and regime"} onPress={() => { props.navigation.navigate("Feed") }}>
       </Button>
     </View>
   )
 };
+
 const styles = StyleSheet.create({
   container: {
     marginTop: STATUSBAR_HEIGHT,

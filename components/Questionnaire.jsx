@@ -5,6 +5,7 @@ import Loader from "./Loader";
 import workoutService from "../services/workoutService";
 import dietService from "../services/dietService";
 import { useLinkProps } from "@react-navigation/native";
+import usersService from "../services/usersService";
 
 export default Questionnaire = ({ name, questions, question, setAnswers, answers, questionIndex, setQuestionIndex, navigation }) => {
   const [markedAnswer, setMarkedAnswer] = useState("");
@@ -20,7 +21,7 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
       console.log("Processing...");
       const userId = await AsyncStorage.getItem("userId");
       if (!userId) {
-        // fetch user id from server
+        userId = await usersService.getIdFromFbToken();
       }
       const workout = await workoutService.createWorkout(fullAnswers, userId);
       const diet = await dietService.createDiet(fullAnswers, userId);
@@ -46,7 +47,6 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
   }
 
   const onNumberInputChange = (text) => {
-    console.log(text);
     setMarkedAnswer(text);
   }
   return (
