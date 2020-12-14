@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import DietPreview from "../../components/DietPreview";
 import TrainingProgramPreview from "../../components/TrainingProgramPreview";
+<<<<<<< HEAD
 
+=======
+import { STATUSBAR_HEIGHT } from "../../global/globalVariables";
+>>>>>>> origin/fb-login
 const RegimePreviewScreen = (props) => {
   const workout = [
     {

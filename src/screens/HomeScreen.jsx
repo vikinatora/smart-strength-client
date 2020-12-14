@@ -1,7 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
 import { Text, StyleSheet, AsyncStorage, TouchableOpacity, View, Image } from "react-native";
-import { connect } from "react-redux";
-import * as actions from '../../actions';
 import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
 import usersService from "../../services/usersService";
@@ -160,4 +158,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(null, actions)(HomeScreen);
+export default HomeScreen;
