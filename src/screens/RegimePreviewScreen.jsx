@@ -6,7 +6,6 @@ import TrainingProgramPreview from "../../components/TrainingProgramPreview";
 import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../../global/globalVariables";
 
 const RegimePreviewScreen = (props) => {
-
   const { workout, diet } = props.route.params;
   useEffect(() => {
     console.log(workout);

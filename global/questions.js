@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
   },
   prefix: {
     paddingHorizontal: 10,
+    fontSize: 22,
     fontWeight: 'bold',
     color: 'black'
   },

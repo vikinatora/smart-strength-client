@@ -18,7 +18,6 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     const getToken = async () => {
-
       // await AsyncStorage.removeItem('fb_token');
       // await AsyncStorage.removeItem('userId');
       let token = await AsyncStorage.getItem('fb_token');
