@@ -1,3 +1,11 @@
 node_modules
 .expo/packager-info.json
 .expo/settings.json
+.expo/web
+.eslintrc.json
+debug.log
+.vscode/launch.json
+.vscode/.react/AppEntry.map
+.vscode/.react/debuggerWorker.js
+.vscode/.react/node_modules%5Cexpo%5CAppEntry.bundle
+web-build/register-service-worker.js
