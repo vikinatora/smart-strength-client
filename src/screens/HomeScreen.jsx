@@ -18,6 +18,7 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     const getToken = async () => {
+      props.navigation.navigate("Questionnaire", { name: "Ivan" })
       // await AsyncStorage.removeItem('fb_token');
       // await AsyncStorage.removeItem('userId');
       let token = await AsyncStorage.getItem('fb_token');
