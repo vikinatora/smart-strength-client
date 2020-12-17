@@ -4,16 +4,66 @@ import moment from "moment";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
+import postsService from "../services/postsService";
+import { AsyncStorage } from "react-native";
+import commentsService from "../services/commentsService";
 
 export default Post = (props) => {
   let defaultAvatar = "https://www.ruf.rice.edu/~power/franco.jpg";
-  let post = props.post
   const [showComments, setShowComments] = useState(false);
+  const [likes, setLikes] = useState(props.post.likes);
+  const [comments, setComments] = useState(props.post.comments);
+  const [isLiked, setIsLiked] = useState(false);
+  const [commentText, setCommentText] = useState("");
 
-  const giveLike = () => {
+  useEffect(() => {
+    const init = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      if (props.post.likes.indexOf(userId) >= 0) {
+        setIsLiked(true);
+      }
+    }
+    init()
+  }, [])
+
+  const likePost = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    let newLikes = JSON.parse(JSON.stringify(likes));
+    newLikes.push(userId);
+    setLikes(newLikes);
+    setIsLiked(true);
+    const success = await postsService.likePost(props.post.id, userId)
+    if (!success) {
+      newLikes = newLikes.filter(id => id != userId);
+      setLikes(newLikes);
+      setIsLiked(false);
+    }
+  }
+
+  const unlikePost = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    let newLikes = JSON.parse(JSON.stringify(likes));
+    newLikes = newLikes.filter(id => id != userId);
+    setLikes(newLikes);
+    setIsLiked(false);
+    const success = await postsService.unlikePost(props.post.id, userId)
+    if (!success) {
+      newLikes.push(userId);
+      setLikes(newLikes);
+      setIsLiked(true);
+    }
 
   }
 
+  const submitComment = async () => {
+    console.log("submitting");
+    console.log(commentText);
+    const userId = await AsyncStorage.getItem("userId");
+    const newComment = await commentsService.add(props.post.id, userId, commentText);
+    if (newComment) {
+      setComments([...comments, newComment]);
+    }
+  }
   const showHideComments = () => {
     showComments ? setShowComments(false) : setShowComments(true);
   }
@@ -25,28 +75,33 @@ export default Post = (props) => {
           {defaultAvatar && <Image
             resizeMode='contain'
             style={styles.avatar}
-            source={{ uri: post.author.avatar || defaultAvatar }}
+            source={{ uri: props.post.author.avatar || defaultAvatar }}
           />}
         </View>
         <View style={styles.contentContainer}>
           <Text>
-            <Text style={[styles.mainText, styles.name]}>{post.author.name}</Text>
+            <Text style={[styles.mainText, styles.name]}>{props.post.author.name}</Text>
             {' '}
             <Text style={styles.mainText}>
-              {post.achievement}
+              {props.post.achievement}
             </Text>
           </Text>
-          <Text style={[styles.text, styles.created]}>{moment(post.created || "").fromNow()}</Text>
+          <Text style={[styles.text, styles.created]}>{moment(props.post.created || "").fromNow()}</Text>
           <Text style={styles.contentText}>
-            {post.content}
+            {props.post.content}
           </Text>
           <Text style={[styles.text, styles.likeText]}>
-            <Text> {post.likes.length} respects </Text> <Text>{post.comments.length} {post.comments.length > 1 ? "comments" : "comment"}</Text>
+            <Text> {likes.length} respects </Text> <Text>{comments.length} {comments.length > 1 ? "comments" : "comment"}</Text>
           </Text>
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.likeButton}>
+            <TouchableOpacity
+              style={styles.likeButton}
+              onPress={() => {
+                !isLiked ? likePost() : unlikePost()
+              }}
+            >
               <Text style={styles.button}>
-                <FontAwesome5 size={18} name="dumbbell" color="white" /> Respect
+                <FontAwesome5 size={18} name="dumbbell" color="white" /> {isLiked ? "Unrespect" : "Respect"}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.likeButton} onPress={() => showHideComments()}>
@@ -58,10 +113,10 @@ export default Post = (props) => {
           {
             showComments
               ? <View>
-                <CommentInput submitComment={props.submitComment} />
-                <View style={styles.commentsContainer}>
-                  {post.comments.map((comment, index) => <Comment key={index} comment={comment} />)}
-                </View>
+                {comments.map((comment, index) =>
+                  <Comment defaultAvatar={defaultAvatar} key={index} comment={comment} />
+                )}
+                <CommentInput commentText={commentText} setCommentText={setCommentText} submitComment={submitComment} />
               </View>
               : null
           }
@@ -111,6 +166,7 @@ const styles = StyleSheet.create({
   },
   commentsContainer: {
     flexDirection: 'row',
+    width: "100%"
   },
   avatarContainer: {
     alignItems: 'center',

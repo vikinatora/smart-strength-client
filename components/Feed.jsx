@@ -27,11 +27,9 @@ const Feed = (props) => {
 
   const fetchPosts = async () => {
     try {
-      console.log("fetching posts");
       const posts = await feedService.getFeed();
       if (posts) {
         setPosts(posts);
-        console.log("fetchedPosts");
       } else {
         setShowFailedToFetchPosts(true);
       }
@@ -41,19 +39,6 @@ const Feed = (props) => {
 
   }
 
-  const submitComment = async (comment) => {
-    _scrollView.scrollTo({ y: 0 });
-    try {
-      // Make API call
-      // const response = await put('comments', {
-      //   user_id: user._id,
-      //   content: comment,
-      // });
-    }
-    catch (error) {
-      alert(error);
-    }
-  };
 
   return (
     <View style={styles.componentContainer}>
@@ -72,7 +57,7 @@ const Feed = (props) => {
         }
       >
         {(posts || []).map((post, index) => (
-          <Post key={index} post={post} submitComment={submitComment} />
+          <Post key={index} post={post} />
         ))}
       </ScrollView>
       {
