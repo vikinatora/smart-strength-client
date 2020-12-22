@@ -84,10 +84,10 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
               <Text style={{ textAlign: "center", fontSize:22, color: "#ffffff" }}>Previous</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={+markedAnswer > 0 ? false : true}
-              style={[
+              disabled={!markedAnswer}
+              style={[  
                 { width: "45%", backgroundColor: "#3ca9e2", padding: 5, borderRadius: 5, marginVertical: 5 },
-                +markedAnswer ? {} : { opacity: 0.5 }
+                markedAnswer ? {} : { opacity: 0.5 }
               ]}
               onPress={viewNextQuestion}
             >

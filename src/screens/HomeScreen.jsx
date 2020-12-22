@@ -18,14 +18,14 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     const getToken = async () => {
-      // await AsyncStorage.removeItem('fb_token');
-      // await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('fb_token');
+      await AsyncStorage.removeItem('userId');
       let token = await AsyncStorage.getItem('fb_token');
       let userId = await AsyncStorage.getItem('userId');
       if (token && userId) {
         setSigningIn(true);
         let name = await getUserNameAsync();
-        // props.navigation.navigate("Questionnaire", { name })
+        props.navigation.navigate("Questionnaire", { name })
         // props.navigation.navigate("RegimePreview")
         //TODO: Check for training program ID and navigate to questionnaire if doesn't exist
         setSigningIn(false);

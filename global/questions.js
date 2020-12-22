@@ -7,8 +7,8 @@ export default newQuestions = [
     question: "What is your gender?",
     answers:
       [
-        { id: "1", text: "Male" },
-        { id: "2", text: "Female" },
+        { id: "male", text: "Male" },
+        { id: "female", text: "Female" },
       ]
   },
   {
@@ -179,9 +179,11 @@ const styles = StyleSheet.create({
   },
   numberInput: {
     width: "50%",
-    textAlign: "right"
+    textAlign: "right",
+    fontSize: 22,
   },
   numberInputNoSuffix: {
+    fontSize: 22,
     width: "100%",
     textAlign: "center"
 
