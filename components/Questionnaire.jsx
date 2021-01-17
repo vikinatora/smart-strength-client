@@ -52,7 +52,7 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
   }
   return (
     isProcessing
-      ? <Loader />
+      ? <Loader texts={["Hold on a few seconds...", "We are preparing your personal training regime and diet"]} />
       :
       <View>
         <Text style={{textAlign: "center", fontSize: 22, marginTop: SCREEN_HEIGHT / 14, color: "#ffffff"}}>These questions will help us get to know you better, {name}</Text>

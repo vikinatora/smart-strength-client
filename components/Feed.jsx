@@ -4,17 +4,15 @@ import Post from "./Post";
 import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../global/globalVariables";
 import feedService from "../services/feedService";
 import MessageModal from "./MessageModal";
-import { ActivityIndicator } from "react-native";
+import Loader from "./Loader";
 
 const Feed = (props) => {
   const [posts, setPosts] = useState([]);
   const [showFailedToFetchPosts, setShowFailedToFetchPosts] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    setIsFetching(true);
     fetchPosts();
-    setIsFetching(false);
   }, [])
   let _scrollView = null;
   const [refreshing, setRefreshing] = useState(false);
@@ -27,14 +25,18 @@ const Feed = (props) => {
 
   const fetchPosts = async () => {
     try {
+      setIsFetching(true);
       const posts = await feedService.getFeed();
       if (posts) {
         setPosts(posts);
       } else {
         setShowFailedToFetchPosts(true);
       }
+      setIsFetching(false);
     } catch (err) {
       setShowFailedToFetchPosts(true);
+      setIsFetching(false);
+
     }
 
   }
@@ -44,7 +46,7 @@ const Feed = (props) => {
     <View style={styles.componentContainer}>
       {
         isFetching
-          ? <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+          ? <Loader />
           : null
       }
       <ScrollView

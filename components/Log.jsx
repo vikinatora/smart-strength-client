@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { ClippingRectangle, TouchableOpacity } from "react-native";
 import { StyleSheet, View, Text, Picker, TextInpu, TouchableHighlight, Modal, TextInput } from "react-native";
 import { useFonts, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
 import { AppLoading } from 'expo';
 import { setDeep } from "../global/helperFunctions";
 import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../global/globalVariables";
-import { trainingPlan } from "../global/еxampleTrainingProgram";
+import moment from "moment";
 import postsService from "../services/postsService";
 import { AsyncStorage } from "react-native";
 import MessageModal from "./MessageModal";
 import { ActivityIndicator } from "react-native";
 import workoutService from "../services/workoutService";
+import Loader from "./Loader";
 
 const Log = (props) => {
   const [excerciseIndex, setExcerciseIndex] = useState(0);
@@ -28,6 +29,7 @@ const Log = (props) => {
   const [isPosting, setIsPosting] = useState(false);
   const [render, setRender] = useState(false);
   const [isRestDay, setIsRestDay] = useState(false);
+  const [hasTrained, setHasTrained] = useState(false);
 
 
   let [fontsLoaded] = useFonts({
@@ -38,6 +40,14 @@ const Log = (props) => {
 
   useEffect(() => {
     const initForm = async () => {
+      // let completedWorkoutDate = await AsyncStorage.getItem("completedWorkoutDate");
+      // let hasTrainedDate = new Date(completedWorkoutDate);
+
+      // let todaysDate = new Date(Date.now());
+      // if (todaysDate > hasTrainedDate) {
+      //   setHasTrained(true);
+      //   return;
+      // }
       let workout = await workoutService.getTodaysWorkout();
       setWorkoutState(workout);
       if (workout) {
@@ -231,14 +241,23 @@ const Log = (props) => {
 
   const saveWorkout = async () => {
     let result = await workoutService.saveWorkout(workoutState);
+    let date = new Date(Date.now()).toString();
+    await AsyncStorage.setItem("completedWorkoutDate", date);
+    setHasTrained(true);
   }
 
   return (
     !fontsLoaded || !render
-      ? <AppLoading />
+      ? <Loader />
       :
       <View style={styles.container}>
-        {isRestDay
+        { hasTrained
+          ? <View style={{ marginTop: 30 }}>
+            <Text style={{ textAlign: "center", fontSize: 28, fontWeight: "bold" }} >You've already trained today</Text>
+            <Text style={{ textAlign: "center", fontSize: 22, marginTop: 10 }}>Take a break and do something else. </Text>
+            <Text style={{ textAlign: "center", fontSize: 22, marginTop: 10 }}>You deserve it! 👏 </Text>
+          </View>
+          : isRestDay
           ? <View style={{ marginTop: 30 }}>
             <Text style={{ textAlign: "center", fontSize: 28, fontWeight: "bold" }} >Today's a rest day.</Text>
             <Text style={{ textAlign: "center", fontSize: 22, marginTop: 10 }}>Take a break and do something else. </Text>
@@ -320,53 +339,53 @@ const Log = (props) => {
               </View>
               <View>
                 {
-                  hasSavedSetWeight() && excerciseIndex == workoutState.excercises.length - 1 && setNumber == workoutState.excercises[excerciseIndex].sets
+                  excerciseIndex == workoutState.excercises.length - 1 && setNumber == workoutState.excercises[excerciseIndex].sets
                     ?
                     <View>
                       <TouchableOpacity
-                        style={styles.finishButton}
-                        onPress={saveWorkout}
+                        disabled={!hasSavedSetWeight()}
+                        style={[styles.mainButton, hasSavedSetWeight() ? {} : { opacity: 0.5 }]}
+                        onPress={() => hasSavedSetWeight() ? saveWorkout() : null}
                       >
                         <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Finish workout</Text>
                       </TouchableOpacity>
                     </View>
-                    : hasSavedSetWeight() && setNumber === currExcercise.sets
-                      ?
-                      <View>
-                        <TouchableOpacity
-                          style={styles.mainButton}
-                          onPress={() => { setExcerciseIndex(excerciseIndex + 1); }}
-                        >
-                          <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Go to next excercise</Text>
-                        </TouchableOpacity>
-                      </View>
-                      : null
-                }
-                {
-                  hasSavedSetWeight() && setNumber !== currExcercise.sets
+                    : setNumber === currExcercise.sets
                     ?
                     <View>
                       <TouchableOpacity
-                        style={styles.mainButton}
-                        onPress={() => { setSetNumber(setNumber + 1) }}
+                        disabled={!hasSavedSetWeight()}
+                        style={[styles.mainButton, hasSavedSetWeight() ? {} : { opacity: 0.5 }]}
+                        onPress={() => { hasSavedSetWeight() ? setExcerciseIndex(excerciseIndex + 1): null }}
+                      >
+                        <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Go to next excercise</Text>
+                      </TouchableOpacity>
+                    </View>
+                    : null
+                }
+                {
+                 setNumber !== currExcercise.sets
+                    ?
+                    <View>
+                      <TouchableOpacity
+                        disabled={!hasSavedSetWeight()}
+                        style={[styles.mainButton, hasSavedSetWeight() ? {} : { opacity: 0.5 }]}
+                        onPress={() => { hasSavedSetWeight() ? setSetNumber(setNumber + 1) : null}}
                       >
                         <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}>Next set</Text>
                       </TouchableOpacity>
                     </View>
                     : null
                 }
-                {
-                  hasSavedSetWeight()
-                    ?
-                    <View>
-                      <TouchableOpacity style={styles.secondaryButton}>
-                        <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}
-                          onPress={() => setShowPostPreview(true)}
-                        >Share achievement</Text>
-                      </TouchableOpacity>
-                    </View>
-                    : null
-                }
+                  <View>
+                    <TouchableOpacity 
+                    style={[styles.secondaryButton, hasSavedSetWeight() ? {} : { opacity: 0.5 }]}
+                    disabled={!hasSavedSetWeight()}
+                    onPress={() => hasSavedSetWeight() ? setShowPostPreview(true) : null}>
+                      <Text style={{ color: "white", fontSize: 18, textAlign: "center" }}
+                      >Share achievement</Text>
+                    </TouchableOpacity>
+                  </View>
               </View>
             </View>
             <Modal

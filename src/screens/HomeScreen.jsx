@@ -18,8 +18,8 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     const getToken = async () => {
-      await AsyncStorage.removeItem('fb_token');
-      await AsyncStorage.removeItem('userId');
+      // await AsyncStorage.removeItem('fb_token');
+      // await AsyncStorage.removeItem('userId');
       let token = await AsyncStorage.getItem('fb_token');
       let userId = await AsyncStorage.getItem('userId');
       if (token && userId) {
@@ -34,7 +34,6 @@ const HomeScreen = (props) => {
     }
     getToken();
   }, []);
-
 
   const login = async () => {
     setSigningIn(true);

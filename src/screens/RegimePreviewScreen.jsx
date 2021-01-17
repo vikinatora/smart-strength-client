@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { View, Text, StyleSheet, Button } from "react-native";
 import DietPreview from "../../components/DietPreview";
 import TrainingProgramPreview from "../../components/TrainingProgramPreview";
-import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../../global/globalVariables";
+import { STATUSBAR_HEIGHT } from "../../global/globalVariables";
 
 const RegimePreviewScreen = (props) => {
   const { workout, diet } = props.route.params;
