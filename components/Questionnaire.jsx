@@ -52,7 +52,7 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
   }
   return (
     isProcessing
-      ? <Loader />
+      ? <Loader texts={["Hold on a few seconds...", "We are preparing your personal training regime and diet"]} />
       :
       <View>
         <Text style={{textAlign: "center", fontSize: 22, marginTop: SCREEN_HEIGHT / 14, color: "#ffffff"}}>These questions will help us get to know you better, {name}</Text>
@@ -84,10 +84,10 @@ export default Questionnaire = ({ name, questions, question, setAnswers, answers
               <Text style={{ textAlign: "center", fontSize:22, color: "#ffffff" }}>Previous</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              disabled={+markedAnswer > 0 ? false : true}
-              style={[
+              disabled={!markedAnswer}
+              style={[  
                 { width: "45%", backgroundColor: "#3ca9e2", padding: 5, borderRadius: 5, marginVertical: 5 },
-                +markedAnswer ? {} : { opacity: 0.5 }
+                markedAnswer ? {} : { opacity: 0.5 }
               ]}
               onPress={viewNextQuestion}
             >

@@ -12,7 +12,7 @@ export default TrainingRegimePreview = (props) => {
       persistentScrollbar={true}
     >
       <View style={styles.container}>
-        <Text style={{ fontSize: 26, color: "#0F45A1", textAlign: "center", marginVertical: 10 }}>Training Routine</Text>
+        <Text style={{ fontSize: 26, color: "#0F45A1", textAlign: "center", marginVertical: 10 }}>Training Program</Text>
         {
           props.workout.workouts.map((workout, index) => (
             <View key={index} style={{ marginBottom: 15 }}>

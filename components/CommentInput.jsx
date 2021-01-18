@@ -1,16 +1,14 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { KeyboardAvoidingView, TouchableOpacity, View, TextInput, StyleSheet, Text } from "react-native";
 
 export default CommentInput = (props) => {
-  const [commentText, setCommentText] = useState("");
-
   const onChangeText = (text) => {
-    setCommentText(text)
+    props.setCommentText(text)
   };
 
   const submit = (text) => {
     if (text) {
-      setCommentText("");
+      props.setCommentText("");
       props.submitComment(text);
     } else {
       alert('Please enter your comment first');
@@ -18,7 +16,7 @@ export default CommentInput = (props) => {
   };
 
   const onSubmitEditing = ({ nativeEvent: { text } }) => {
-    setCommentText(text);
+    props.setCommentText(text);
     submit(text);
   };
 
@@ -35,7 +33,7 @@ export default CommentInput = (props) => {
           keyboardType="twitter" // keyboard with no return button
           autoFocus={false} // focus and show the keyboard
           style={styles.input}
-          value={commentText}
+          value={props.commentText}
           onChangeText={onChangeText} // handle input changes
           onSubmitEditing={onSubmitEditing} // handle submit event
         />
@@ -45,7 +43,7 @@ export default CommentInput = (props) => {
           onPress={submit}
         >
           {/* Apply inactive style if no input */}
-          <Text style={[styles.text, !commentText ? styles.inactive : []]}>Post</Text>
+          <Text style={[styles.text, !props.commentText ? styles.inactive : []]}>Post</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

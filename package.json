@@ -12,6 +12,7 @@
     "@expo-google-fonts/open-sans": "^0.1.0",
     "@expo/vector-icons": "^10.2.1",
     "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/cli": "^4.13.1",
     "@react-native-community/masked-view": "^0.1.5",
     "@react-navigation/native": "^5.8.2",
     "@react-navigation/stack": "^5.11.1",
@@ -33,7 +34,12 @@
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "babel-preset-expo": "~8.0.0",
-    "jest": "^26.6.3"
+    "detox": "^17.14.6",
+    "detox-expo-helpers": "^0.6.0",
+    "expo-detox-hook": "^1.0.10",
+    "jest": "^26.6.3",
+    "jest-circus": "^26.6.3",
+    "jest-expo": "^40.0.1"
   },
   "private": true
 }

@@ -4,17 +4,15 @@ import Post from "./Post";
 import { SCREEN_HEIGHT, STATUSBAR_HEIGHT } from "../global/globalVariables";
 import feedService from "../services/feedService";
 import MessageModal from "./MessageModal";
-import { ActivityIndicator } from "react-native";
+import Loader from "./Loader";
 
 const Feed = (props) => {
   const [posts, setPosts] = useState([]);
   const [showFailedToFetchPosts, setShowFailedToFetchPosts] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    setIsFetching(true);
     fetchPosts();
-    setIsFetching(false);
   }, [])
   let _scrollView = null;
   const [refreshing, setRefreshing] = useState(false);
@@ -27,39 +25,28 @@ const Feed = (props) => {
 
   const fetchPosts = async () => {
     try {
-      console.log("fetching posts");
+      setIsFetching(true);
       const posts = await feedService.getFeed();
       if (posts) {
         setPosts(posts);
-        console.log("fetchedPosts");
       } else {
         setShowFailedToFetchPosts(true);
       }
+      setIsFetching(false);
     } catch (err) {
       setShowFailedToFetchPosts(true);
+      setIsFetching(false);
+
     }
 
   }
 
-  const submitComment = async (comment) => {
-    _scrollView.scrollTo({ y: 0 });
-    try {
-      // Make API call
-      // const response = await put('comments', {
-      //   user_id: user._id,
-      //   content: comment,
-      // });
-    }
-    catch (error) {
-      alert(error);
-    }
-  };
 
   return (
     <View style={styles.componentContainer}>
       {
         isFetching
-          ? <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+          ? <Loader />
           : null
       }
       <ScrollView
@@ -72,7 +59,7 @@ const Feed = (props) => {
         }
       >
         {(posts || []).map((post, index) => (
-          <Post key={index} post={post} submitComment={submitComment} />
+          <Post key={index} post={post} />
         ))}
       </ScrollView>
       {

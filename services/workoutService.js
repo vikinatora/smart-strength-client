@@ -1,5 +1,4 @@
 import { BASEURI } from "../global/globalVariables";
-import api from "./api";
 import axios from "axios";
 import { trainingPlan } from "../global/еxampleTrainingProgram";
 import { AsyncStorage } from "react-native";

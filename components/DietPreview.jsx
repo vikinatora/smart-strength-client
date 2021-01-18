@@ -17,7 +17,7 @@ export default DietPreview = (props) => {
           <Text style={{ fontSize: 18, color: "#0F45A1", fontWeight: "bold" }}>{'\u2022'}Calories: {props.diet.calories}kcal</Text>
           <Text style={{ fontSize: 18, color: "#0F45A1", fontWeight: "bold" }}>{'\u2022'}Protein: {props.diet.protein}g</Text>
           <Text style={{ fontSize: 18, color: "#0F45A1", fontWeight: "bold" }}>{'\u2022'}Carbs: {props.diet.carbs}g</Text>
-          <Text style={{ fontSize: 18, color: "#0F45A1", fontWeight: "bold" }}>{'\u2022'}Fats: {props.diet.fats}g</Text>
+          <Text style={{ fontSize: 18, color: "#0F45A1", fontWeight: "bold" }}>{'\u2022'}Fats: {props.diet.fat}g</Text>
         </View>
       </View>
 
