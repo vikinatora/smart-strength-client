@@ -212,4 +212,4 @@ Project Link: [https://github.com/vikinatora/smart-strength-client](https://gith
 [license-shield]: https://img.shields.io/github/license/vikinatora/smart-strength-client.svg?style=for-the-badge
 [license-url]: https://github.com/vikinatora/smart-strength-client/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/vikinatora
+[linkedin-url]: https://linkedin.com/in/viktor-todorov-8a7434122
