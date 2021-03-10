@@ -128,9 +128,6 @@ That's why there's [Smart Strength V2](https://github.com/smart-strength) in the
    npm install
    ```
 3. Set the api endpoint in global/globalVariables.js
-   ```sh
-   npm install
-   ```
 4. Start the project
    ```sh
    expo start
